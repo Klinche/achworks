@@ -1,0 +1,41 @@
+{
+    "name": "omnipay/ACHWorks",
+    "type": "library",
+    "description": "ACHWorks gateway for the Omnipay payment processing library",
+    "keywords": [
+        "ACHWorks net",
+        "ach",
+        "ACHWorks.net",
+        "gateway",
+        "merchant",
+        "omnipay",
+        "pay",
+        "payment"
+    ],
+    "homepage": "https://github.com/omnipay/achworks",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Adrian Macneil",
+            "email": "adrian@adrianmacneil.com"
+        },
+        {
+            "name": "Omnipay Contributors",
+            "homepage": "https://github.com/omnipay/authorizenet/contributors"
+        }
+    ],
+    "autoload": {
+        "psr-4": { "Omnipay\\ACHWorks\\" : "src/" }
+    },
+    "require": {
+        "omnipay/common": "~2.0"
+    },
+    "require-dev": {
+        "omnipay/tests": "~2.0"
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "2.0.x-dev"
+        }
+    }
+}

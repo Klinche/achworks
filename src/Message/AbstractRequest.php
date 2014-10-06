@@ -228,7 +228,7 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
     {
 
 
-       $data = new SimpleXMLElement('<SendACHTrans/>');
+        $data = new SimpleXMLElement('<SendACHTrans/>');
        $data->addAttribute('xmlns', $this->namespace);
        $data = $this->getInpCompanyData($data);
        $dataInpACHTransRecord = $data->addChild('InpACHTransRecord');
@@ -248,11 +248,11 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
 
        $dataInpACHTransRecord->addChild('CustomerID',$this->getCompanySSS()) ;
        $dataInpACHTransRecord->addChild('CustomerName',$this->getCompanySSS()) ;
-       $dataInpACHTransRecord->addChild('CustomerRoutingNo',$this->getCompanySSS()) ;
-       $dataInpACHTransRecord->addChild('CustomerAcctNo',$this->getCompanySSS()) ;
+       $dataInpACHTransRecord->addChild('CustomerRoutingNo',$this->getBankAccount()->getRoutingNumber()) ;
+       $dataInpACHTransRecord->addChild('CustomerAcctNo',$this->getBankAccount()->getAccountNumber()) ;
 
-       // Checking 'C' or Savings  'S'
-       $dataInpACHTransRecord->addChild('CustomerAcctType',$this->getCompanySSS()) ;
+        // Checking 'C' or Savings  'S'
+       $dataInpACHTransRecord->addChild('CustomerAcctType',$this->getBankAccount()->setBankAccountType()) ;
        $dataInpACHTransRecord->addChild('TransAmount',$this->getCompanySSS()) ;
        $dataInpACHTransRecord->addChild('CheckOrCustID',$this->getCompanySSS()) ;
        $dataInpACHTransRecord->addChild('CheckOrTransDate',$this->getCompanySSS()) ;

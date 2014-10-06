@@ -10,7 +10,7 @@ use SimpleXMLElement;
  *
  *   Achworks uses the SendACHTransaction for both Debit and Credit, so we have an abstract method to fill it in.
  */
-class RefundRequest extends AbstractRequest
+class RefundRequest extends AuthorizeRequest
 {
     public $transactionType = 'REFUND';
 

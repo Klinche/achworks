@@ -8,7 +8,7 @@ use SimpleXMLElement;
 /**
  * ACHWorks Purchase Request
  */
-class PurchaseRequest extends AbstractRequest
+class PurchaseRequest extends AuthorizeRequest
 {
     protected $endpoint = 'https://achworks.com/';
     protected $namespace = 'http://achworks.com/';
@@ -36,7 +36,6 @@ class PurchaseRequest extends AbstractRequest
     public function getData()
     {
         /*
-         * Klinche already has the money in the account, so we probably don't need to validate the card, but in case...
 
            $this->validate('amount', 'card');
            $this->getCard()->validate();

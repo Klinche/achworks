@@ -2,12 +2,22 @@
 
 namespace Omnipay\ACHWorks\Message;
 
+use Omnipay\ACHWorks\BankAccount;
+use Omnipay\ACHWorks;
+use Omnipay\Omnipay;
 use Omnipay\Tests\TestCase;
 
 class PurchaseRequestTest extends TestCase
 {
     public function setUp()
     {
+
+        $bankAccount = new BankAccount();
+        $bankAccount->setAccountNumber("0512-351217");
+        $bankAccount->setRoutingNumber("4271-04991");
+        $bankAccount->setBankName("Mikey National Bank");
+        $bankAccount->setBankAccountType(BankAccount::ACCOUNT_TYPE_CHECKING);
+
         $this->request = new PurchaseRequest($this->getHttpClient(), $this->getHttpRequest());
         $this->request->initialize(
             array(
@@ -15,6 +25,7 @@ class PurchaseRequestTest extends TestCase
                 'amount' => '12.00',
                 'customerId' => 'cust-id',
                 'card' => $this->getValidCard(),
+                'bankAccount' => $bankAccount
             )
         );
     }

@@ -125,7 +125,7 @@ class BankAccount
     public function setRoutingNumber($value)
     {
         // strip non-numeric characters
-        return $this->setParameter('routingNumber', preg_replace('/\D/', '', $value));
+         return $this->setParameter('routingNumber', preg_replace('/\D/', '', $value));
     }
 
     public function getBankAccountType()

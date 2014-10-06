@@ -16,7 +16,6 @@ class ConnectionCheckRequest extends AbstractRequest
         $data = new SimpleXMLElement('<ConnectionCheck/>');
         $data->addAttribute('xmlns', $this->namespace);
         $data = $this->getInpCompanyData($data);
-        var_dump("ConnectionCheck:", $data->asXML());
         return $data;
     }
 }

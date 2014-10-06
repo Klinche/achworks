@@ -1,9 +1,9 @@
 <?php
 
-namespace Omnipay\CardSave\Message;
+namespace Omnipay\ACHWorks\Message;
 
 /**
- * CardSave Purchase Request
+ * ACHWorks Purchase Request
  */
 class ReferencedPurchaseRequest extends RefundRequest
 {

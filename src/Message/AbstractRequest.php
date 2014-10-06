@@ -12,8 +12,8 @@ use Omnipay\ACHWorks\BankAccount;
  */
 abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
 {
-    protected $liveEndpoint = 'https://secure.authorize.net/gateway/transact.dll';
-    protected $developerEndpoint = 'https://test.authorize.net/gateway/transact.dll';
+    protected $liveEndpoint = 'http://tstsvr.achworks.com/dnet/';  // NEED TO CHANGE WHEN PROVIDED
+    protected $developerEndpoint = 'http://tstsvr.achworks.com/dnet/';
     protected $namespace  = "http://achworks.com/";
     protected $_companySSS = "TST";
     protected $_companyLocID = "9502";
@@ -216,6 +216,60 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
 
         return $data;
     }
+
+    /**
+     * setupSendACHTrans - Initialize a basic sendACHTransaction. It can be either Debit or Credit
+     *
+     * @param $custTransType  a String either 'D' or 'C' for the transaction
+     *
+     * @return $data- A SimpleXMLElement with all the nodes filled in
+     */
+    public function setupSendACHTrans( $custTransType)
+    {
+
+
+       $data = new SimpleXMLElement('<SendACHTrans/>');
+       $data->addAttribute('xmlns', $this->namespace);
+       $data = $this->getInpCompanyData($data);
+       $dataInpACHTransRecord = $data->addChild('InpACHTransRecord');
+
+       $dataInpACHTransRecord->addChild('SSS',$this->getCompanySSS()) ;
+       $dataInpACHTransRecord->addChild('LocID',$this->getCompanySSS()) ;
+
+
+       // Unique ID that does not start with W.
+       $dataInpACHTransRecord->addChild('FrontEndTrace',$this->getCompanySSS()) ;
+       $dataInpACHTransRecord->addChild('OriginatorName',$this->getCompanySSS()) ;
+
+       $dataInpACHTransRecord->addChild('TransactionCode',$this->getCompanySSS()) ;  // PPD or CCD?
+
+       // DEBIT or CREDIT - Use 'D' or 'C' Don't know if ACH works can handle lower caase, so just make sure it's UPPER
+       $dataInpACHTransRecord->addChild('CustTransType',strtoupper($custTransType)) ;
+
+       $dataInpACHTransRecord->addChild('CustomerID',$this->getCompanySSS()) ;
+       $dataInpACHTransRecord->addChild('CustomerName',$this->getCompanySSS()) ;
+       $dataInpACHTransRecord->addChild('CustomerRoutingNo',$this->getCompanySSS()) ;
+       $dataInpACHTransRecord->addChild('CustomerAcctNo',$this->getCompanySSS()) ;
+
+       // Checking 'C' or Savings  'S'
+       $dataInpACHTransRecord->addChild('CustomerAcctType',$this->getCompanySSS()) ;
+       $dataInpACHTransRecord->addChild('TransAmount',$this->getCompanySSS()) ;
+       $dataInpACHTransRecord->addChild('CheckOrCustID',$this->getCompanySSS()) ;
+       $dataInpACHTransRecord->addChild('CheckOrTransDate',$this->getCompanySSS()) ;
+       $dataInpACHTransRecord->addChild('EffectiveDate',$this->getCompanySSS()) ;
+       $dataInpACHTransRecord->addChild('Memo',$this->getCompanySSS()) ;
+
+       //  'S' for Single Entry or 'R' for recurring.
+       $dataInpACHTransRecord->addChild('OpCode',$this->getCompanySSS()) ;
+
+       // The $$ amount will not be sent to ACH until this date
+       $dataInpACHTransRecord->addChild('EffectiveDate',$this->getCompanySSS()) ;
+
+       // Merchant's may have multiple account sets. IE; Account set 1 = BofA, Account set 2 = WellsFarge
+       $dataInpACHTransRecord->addChild('AccountSet',$this->getCompanySSS()) ;
+       return $data;
+   }
+
 
     public function sendData($data)
     {

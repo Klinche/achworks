@@ -17,7 +17,6 @@ class CheckCompanyStatusRequest extends AbstractRequest
         $data = new SimpleXMLElement('<CheckCompanyStatus/>');
         $data->addAttribute('xmlns', $this->namespace);
         $data = $this->getInpCompanyData($data);
-        var_dump("CheckCompanyStatus:", $data->asXML());
         return $data;
     }
 }

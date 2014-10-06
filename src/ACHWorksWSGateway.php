@@ -45,9 +45,20 @@ class ACHWorksWSGateway extends AbstractGateway
 
     public function purchase(array $parameters = array())
     {
-        return $this->createRequest('\Omnipay\ACHWorks\Message\ConnectionCheckRequest', $parameters);
+        return $this->createRequest('\Omnipay\ACHWorks\Message\PurchaseRequest', $parameters);
      //   return $this->getHashSecret();
     }
+
+    public function referencedPurchase(array $parameters = array())
+    {
+        return $this->createRequest('\Omnipay\ACHWorks\Message\ReferencedPurchaseRequest', $parameters);
+    }
+
+    public function refund(array $parameters = array())
+    {
+        return $this->createRequest('\Omnipay\ACHWorks\Message\RefundRequest', $parameters);
+    }
+
 
     /* Extensions for ACHWorks */
 

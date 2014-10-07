@@ -3,13 +3,16 @@
 namespace Omnipay\ACHWorks\Message;
 
 use Omnipay\Tests\TestCase;
+use Omnipay\ACHWorks\BankAccount;
+use Omnipay\ACHWorks;
 
-class RefundRequestTest extends TestCase
+class RefundRequestTest extends ACHWorksTest
 {
-    private $request;
 
     public function setUp()
     {
+        parent::setUp();
+
         $this->request = new RefundRequest($this->getHttpClient(), $this->getHttpRequest());
         $this->request->initialize(
             array(
@@ -17,6 +20,7 @@ class RefundRequestTest extends TestCase
                 'amount' => '12.00',
                 'customerId' => 'cust-id',
                 'card' => $this->getValidCard(),
+                'bankAccount' => $this->bankAccount,
             )
         );
     }
@@ -24,7 +28,11 @@ class RefundRequestTest extends TestCase
     public function testGetData()
     {
         $data = $this->request->getData();
+        $this->request->setTestMode(true);
 
+        $resp= $this->request->sendData($data);
+
+        var_dump("RefundRequestTest-sendData", $resp);
         $this->assertSame('AUTH_CAPTURE', $data['x_type']);
         $this->assertSame('10.0.0.1', $data['x_customer_ip']);
         $this->assertSame('cust-id', $data['x_cust_id']);

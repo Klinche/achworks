@@ -66,30 +66,43 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
 
     public function setCompanyKey($value)
     {
-        $this->$_companyKey = $value;
+        return $this->setParameter('companyKey', $value);
     }
 
     public function getCompanyKey()
     {
-        return ($this->_companyKey);
+        return ($this->getParameter('companyKey'));
     }
 
-    public function getApiLoginId()
+
+    public function getMemo()
     {
-        return $this->getParameter('apiLoginId');
+        return $this->getParameter('memo');
     }
 
-    public function setApiLoginId($value)
+    public function setMemo($value)
     {
-        return $this->setParameter('apiLoginId', $value);
+        return $this->setParameter('memo', $value);
     }
+
+
+    public function getCheckNumber()
+    {
+        return $this->getParameter('checkNumber');
+    }
+
+    public function setCheckNumber($value)
+    {
+        return $this->setParameter('checkNumber', $value);
+    }
+
 
     public function getTransactionKey()
     {
         return $this->getParameter('transactionKey');
     }
 
-    public function setTransactionKey($value)
+       public function setTransactionKey($value)
     {
         return $this->setParameter('transactionKey', $value);
     }
@@ -228,7 +241,7 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
     {
 
 
-        $data = new SimpleXMLElement('<SendACHTrans/>');
+       $data = new SimpleXMLElement('<SendACHTrans/>');
        $data->addAttribute('xmlns', $this->namespace);
        $data = $this->getInpCompanyData($data);
        $dataInpACHTransRecord = $data->addChild('InpACHTransRecord');
@@ -239,7 +252,7 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
 
        // Unique ID that does not start with W.
        $dataInpACHTransRecord->addChild('FrontEndTrace',$this->getCompanySSS()) ;
-       $dataInpACHTransRecord->addChild('OriginatorName',$this->getCompanySSS()) ;
+   //    $dataInpACHTransRecord->addChild('OriginatorName',$this->getBankAccount()->getParameter("company")) ;
 
        $dataInpACHTransRecord->addChild('TransactionCode',$this->getCompanySSS()) ;  // PPD or CCD?
 
@@ -247,17 +260,34 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
        $dataInpACHTransRecord->addChild('CustTransType',strtoupper($custTransType)) ;
 
        $dataInpACHTransRecord->addChild('CustomerID',$this->getCompanySSS()) ;
-       $dataInpACHTransRecord->addChild('CustomerName',$this->getCompanySSS()) ;
+
+        var_dump("BankAcct", $this->getBankAccount());
+
+       $fname = $this->getBankAccount()->getFirstName();
+       $lname = $this->getBankAccount()->getLastName();
+
+       $custLFname = strtoupper($fname.",". $lname);
+       $dataInpACHTransRecord->addChild('CustomerName',$custLFname) ;
        $dataInpACHTransRecord->addChild('CustomerRoutingNo',$this->getBankAccount()->getRoutingNumber()) ;
        $dataInpACHTransRecord->addChild('CustomerAcctNo',$this->getBankAccount()->getAccountNumber()) ;
 
         // Checking 'C' or Savings  'S'
-       $dataInpACHTransRecord->addChild('CustomerAcctType',$this->getBankAccount()->setBankAccountType()) ;
-       $dataInpACHTransRecord->addChild('TransAmount',$this->getCompanySSS()) ;
-       $dataInpACHTransRecord->addChild('CheckOrCustID',$this->getCompanySSS()) ;
-       $dataInpACHTransRecord->addChild('CheckOrTransDate',$this->getCompanySSS()) ;
+        if ($this->getBankAccount()->getBankAccountType() == BankAccount::ACCOUNT_TYPE_CHECKING)
+            $dataInpACHTransRecord->addChild('CustomerAcctType',"C") ;
+        else
+          if ($this->getBankAccount()->getBankAccountType() == BankAccount::ACCOUNT_TYPE_SAVINGS)
+            $dataInpACHTransRecord->addChild('CustomerAcctType',"S") ;
+        else
+          if ($this->getBankAccount()->getBankAccountType() == BankAccount::ACCOUNT_TYPE_BUSINESS_CHECKING)
+            $dataInpACHTransRecord->addChild('CustomerAcctType',"C") ;
+
+       $dataInpACHTransRecord->addChild('TransAmount',$this->getAmount()) ;
+       $dataInpACHTransRecord->addChild('CheckOrCustID',$this->getCheckNumber()) ;
+
+       date_default_timezone_set('UTC');
+       $dataInpACHTransRecord->addChild('CheckOrTransDate',date('Y-m-d')) ;
        $dataInpACHTransRecord->addChild('EffectiveDate',$this->getCompanySSS()) ;
-       $dataInpACHTransRecord->addChild('Memo',$this->getCompanySSS()) ;
+       $dataInpACHTransRecord->addChild('Memo',$this->getMemo()) ;
 
        //  'S' for Single Entry or 'R' for recurring.
        $dataInpACHTransRecord->addChild('OpCode',$this->getCompanySSS()) ;
@@ -291,9 +321,12 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
             'SOAPAction' => $this->namespace.$data->getName());
 
         var_dump("SendData Headers:", $headers);
-        var_dump("SendData data:", $document);
+        var_dump("SendData data:", $document->saveXML());
+
 
         $httpResponse = $this->httpClient->post($this->endpoint, $headers, $document->saveXML())->send();
+
+        var_dump("SendDataResponse;", $httpResponse);
 
         return $this->response = new Response($this, $httpResponse->getBody());
     }

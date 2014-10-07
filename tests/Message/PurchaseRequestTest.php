@@ -5,18 +5,13 @@ namespace Omnipay\ACHWorks\Message;
 use Omnipay\ACHWorks\BankAccount;
 use Omnipay\ACHWorks;
 use Omnipay\Omnipay;
-use Omnipay\Tests\TestCase;
 
-class PurchaseRequestTest extends TestCase
+class PurchaseRequestTest extends ACHWorksTest
 {
+
     public function setUp()
     {
-
-        $bankAccount = new BankAccount();
-        $bankAccount->setAccountNumber("0512-351217");
-        $bankAccount->setRoutingNumber("4271-04991");
-        $bankAccount->setBankName("Mikey National Bank");
-        $bankAccount->setBankAccountType(BankAccount::ACCOUNT_TYPE_CHECKING);
+        parent::setUp();
 
         $this->request = new PurchaseRequest($this->getHttpClient(), $this->getHttpRequest());
         $this->request->initialize(
@@ -25,7 +20,9 @@ class PurchaseRequestTest extends TestCase
                 'amount' => '12.00',
                 'customerId' => 'cust-id',
                 'card' => $this->getValidCard(),
-                'bankAccount' => $bankAccount
+                'bankAccount' => $this->bankAccount,
+                'developerMode' => true,
+                'memo'=> 'AchWorksTest',
             )
         );
     }
@@ -33,6 +30,11 @@ class PurchaseRequestTest extends TestCase
     public function testGetData()
     {
         $data = $this->request->getData();
+        $this->request->setTestMode(true);
+
+        $resp= $this->request->sendData($data);
+
+        var_dump("PurchaseRequestTest-sendData", $resp);
 
         $this->assertSame('AUTH_CAPTURE', $data['x_type']);
         $this->assertSame('10.0.0.1', $data['x_customer_ip']);

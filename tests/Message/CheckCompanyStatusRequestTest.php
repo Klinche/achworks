@@ -3,23 +3,28 @@
 namespace Omnipay\ACHWorks\Message;
 
 use Omnipay\Tests\TestCase;
-
-class CheckCompanyStatusRequestTest extends TestCase
+use Omnipay\ACHWorks\BankAccount;
+use Omnipay\ACHWorks;
+class CheckCompanyStatusRequestTest extends ACHWorksTest
 {
-    protected $request;
 
     public function setUp()
     {
+
+        parent::setUp();
+
         $this->request = new CheckCompanyStatusRequest($this->getHttpClient(), $this->getHttpRequest());
         $this->request->initialize(
-            /*
+
             array(
                 'clientIp' => '10.0.0.1',
                 'amount' => '12.00',
                 'customerId' => 'cust-id',
                 'card' => $this->getValidCard(),
+                'bankAccount' => $this->bankAccount
+
             )
-            */
+
         );
     }
 

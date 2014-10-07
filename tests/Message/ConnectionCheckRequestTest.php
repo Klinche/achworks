@@ -2,12 +2,17 @@
 
 namespace Omnipay\ACHWorks\Message;
 
-use Omnipay\Tests\TestCase;
+use Omnipay\ACHWorks\BankAccount;
+use Omnipay\ACHWorks;
 
-class ConnectionCheckRequestTest extends TestCase
+class ConnectionCheckRequestTest extends ACHWorksTest
 {
+
     public function setUp()
     {
+
+        parent::setUp();
+
         $this->request = new ConnectionCheckRequest($this->getHttpClient(), $this->getHttpRequest());
         $this->request->initialize(
             array(
@@ -15,6 +20,8 @@ class ConnectionCheckRequestTest extends TestCase
                 'amount' => '12.00',
                 'customerId' => 'cust-id',
                 'card' => $this->getValidCard(),
+                'bankAccount' => $this->bankAccount
+
             )
         );
     }

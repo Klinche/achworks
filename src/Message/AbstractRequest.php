@@ -6,79 +6,22 @@ use DOMDocument;
 use SimpleXMLElement;
 
 use Omnipay\ACHWorks\BankAccount;
+use Omnipay\ACHWorks;
 
 /**
  * Authorize.Net Abstract Request
  */
 abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
 {
-    protected $liveEndpoint = 'http://tstsvr.achworks.com/dnet/';  // NEED TO CHANGE WHEN PROVIDED
-    protected $developerEndpoint = 'http://tstsvr.achworks.com/dnet/';
+    protected $liveEndpoint = 'http://tstsvr.achworks.com/dnet/achws.asmx';  // NEED TO CHANGE WHEN PROVIDED
+    protected $developerEndpoint = 'http://tstsvr.achworks.com/dnet/achws.asmx';
     protected $namespace  = "http://achworks.com/";
-    protected $_companySSS = "TST";
-    protected $_companyLocID = "9502";
-    protected $_company = "MY COMPANY";
-    protected $_companyKey = "";
-
-    // ACHWorks saop ver4 guide.pdf says for testing use these credentials  (Sect 3.1.1 - 3.1.3)
-    protected $_companySSS_TST = "TST";
-    protected $_companyLocID_TST = "9502";
-    protected $_company_TST = "MY COMPANY";
-
-
-    public function setCompanySSS($value)
-    {
-        $this->_companySSS = $value;
-    }
-
-    public function getCompanySSS()
-    {
-        if ($this->getDeveloperMode())
-           return ($this->_companySSS_TST);
-        else
-           return ($this->_companySSS);
-    }
-    public function setCompanyLocID($value)
-    {
-        $this->$_companyLocID = $value;
-    }
-
-    public function getCompanyLocID()
-    {
-        if ($this->getDeveloperMode())
-            return ($this->_companyLocID_TST);
-        else
-            return ($this->_companyLocID);
-    }
-
-    public function setCompany($value)
-    {
-        $this->$_company = $value;
-    }
-
-    public function getCompany()
-    {
-        if ($this->getDeveloperMode())
-            return ($this->_company_TST);
-        else
-            return ($this->_company);
-    }
-
-    public function setCompanyKey($value)
-    {
-        return $this->setParameter('companyKey', $value);
-    }
-
-    public function getCompanyKey()
-    {
-        return ($this->getParameter('companyKey'));
-    }
-
 
     public function getMemo()
     {
         return $this->getParameter('memo');
     }
+
 
     public function setMemo($value)
     {
@@ -151,86 +94,90 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
         return $this->setParameter('bankAccount', $value);
     }
 
+    //
+    // achWorks Soap Ver 4 Guide- Sect 3.1.1 You need to have these all set to our customer info provided by ACHWorks
+    public function getLocID()
+    {
+        return $this->getParameter('LocID');
+    }
+
+    public function setLocID($value)
+    {
+        return $this->setParameter('LocID', $value);
+    }
+    public function getSSS()
+    {
+        return $this->getParameter('SSS');
+    }
+
+    public function setSSS($value)
+    {
+        return $this->setParameter('SSS', $value);
+    }
+
+    public function getCompany()
+    {
+        return $this->getParameter('Company');
+    }
+
+    public function setCompany($value)
+    {
+        return $this->setParameter('Company', $value);
+    }
+
+    public function getCompanyKey()
+    {
+        return $this->getParameter('CompanyKey');
+    }
+
+    public function setCompanyKey($value)
+    {
+        return $this->setParameter('CompanyKey', $value);
+    }
+
+    public function getTransactionType()
+    {
+        return $this->getParameter('TransactionType');
+    }
+
+    public function setTransactionType($value)
+    {
+        return $this->setParameter('TransactionType', $value);
+    }
+
+    public function getOpCode()
+    {
+        return $this->getParameter('OpCode');
+    }
+
+    public function setOpCode($value)
+    {
+        return $this->setParameter('OpCode', $value);
+    }
+
+    // Merchant's may have multiple account sets. IE; Account set 1 = BofA, Account set 2 = WellsFarge
+    public function getAccountSet()
+    {
+        return $this->getParameter('AccountSet');
+    }
+
+    public function setAccountSet($value)
+    {
+        return $this->setParameter('AccountSet', $value);
+    }
 
     protected function getInpCompanyData(SimpleXMLElement $data)
     {
         $inpCompanyInfo = $data->addChild('InpCompanyInfo');
-        $inpCompanyInfo->addChild('SSS',$this->getCompanySSS()) ;
-        $inpCompanyInfo->addChild('LocID',$this->getCompanyLocID());
-        $inpCompanyInfo->addChild('Company', $this->getCompany());
-        $inpCompanyInfo->addChild('CompanyKey', $this->getCompanyKey());
+        $this->getHashSecret();
+        $inpCompanyInfo->addChild('SSS',$this->getParameter('SSS'));
+        $inpCompanyInfo->addChild('LocID',$this->getParameter('LocID'));
+        $inpCompanyInfo->addChild('Company', $this->getParameter('Company'));
+        $inpCompanyInfo->addChild('CompanyKey', $this->getParameter('CompanyKey'));
         return $data;
     }
 
-    protected function getBillingData()
-    {
-        $data = array();
-        $data['x_amount'] = $this->getAmount();
-        $data['x_invoice_num'] = $this->getTransactionId();
-        $data['x_description'] = $this->getDescription();
-
-        if ($card = $this->getCard()) {
-            // customer billing details
-            $data['x_first_name'] = $card->getBillingFirstName();
-            $data['x_last_name'] = $card->getBillingLastName();
-            $data['x_company'] = $card->getBillingCompany();
-            $data['x_address'] = trim(
-                $card->getBillingAddress1()." \n".
-                $card->getBillingAddress2()
-            );
-            $data['x_city'] = $card->getBillingCity();
-            $data['x_state'] = $card->getBillingState();
-            $data['x_zip'] = $card->getBillingPostcode();
-            $data['x_country'] = $card->getBillingCountry();
-            $data['x_phone'] = $card->getBillingPhone();
-            $data['x_email'] = $card->getEmail();
-
-            // customer shipping details
-            $data['x_ship_to_first_name'] = $card->getShippingFirstName();
-            $data['x_ship_to_last_name'] = $card->getShippingLastName();
-            $data['x_ship_to_company'] = $card->getShippingCompany();
-            $data['x_ship_to_address'] = trim(
-                $card->getShippingAddress1()." \n".
-                $card->getShippingAddress2()
-            );
-            $data['x_ship_to_city'] = $card->getShippingCity();
-            $data['x_ship_to_state'] = $card->getShippingState();
-            $data['x_ship_to_zip'] = $card->getShippingPostcode();
-            $data['x_ship_to_country'] = $card->getShippingCountry();
-        } elseif ($bankAccount = $this->getBankAccount()) {
-            // customer billing details
-            $data['x_first_name'] = $bankAccount->getBillingFirstName();
-            $data['x_last_name'] = $bankAccount->getBillingLastName();
-            $data['x_company'] = $bankAccount->getBillingCompany();
-            $data['x_address'] = trim(
-                $bankAccount->getBillingAddress1()." \n".
-                $bankAccount->getBillingAddress2()
-            );
-            $data['x_city'] = $bankAccount->getBillingCity();
-            $data['x_state'] = $bankAccount->getBillingState();
-            $data['x_zip'] = $bankAccount->getBillingPostcode();
-            $data['x_country'] = $bankAccount->getBillingCountry();
-            $data['x_phone'] = $bankAccount->getBillingPhone();
-            $data['x_email'] = $bankAccount->getEmail();
-
-            // customer shipping details
-            $data['x_ship_to_first_name'] = $bankAccount->getShippingFirstName();
-            $data['x_ship_to_last_name'] = $bankAccount->getShippingLastName();
-            $data['x_ship_to_company'] = $bankAccount->getShippingCompany();
-            $data['x_ship_to_address'] = trim(
-                $bankAccount->getShippingAddress1()." \n".
-                $bankAccount->getShippingAddress2()
-            );
-            $data['x_ship_to_city'] = $bankAccount->getShippingCity();
-            $data['x_ship_to_state'] = $bankAccount->getShippingState();
-            $data['x_ship_to_zip'] = $bankAccount->getShippingPostcode();
-            $data['x_ship_to_country'] = $bankAccount->getShippingCountry();
-        }
-
-        return $data;
-    }
-
-    /**
+   /**
      * setupSendACHTrans - Initialize a basic sendACHTransaction. It can be either Debit or Credit
      *
      * @param $custTransType  a String either 'D' or 'C' for the transaction
@@ -246,22 +193,22 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
        $data = $this->getInpCompanyData($data);
        $dataInpACHTransRecord = $data->addChild('InpACHTransRecord');
 
-       $dataInpACHTransRecord->addChild('SSS',$this->getCompanySSS()) ;
-       $dataInpACHTransRecord->addChild('LocID',$this->getCompanySSS()) ;
+       $dataInpACHTransRecord->addChild('SSS',$this->getParameter('SSS')) ;
+       $dataInpACHTransRecord->addChild('LocID',$this->getParameter('LocID')) ;
 
 
-       // Unique ID that does not start with W.
-       $dataInpACHTransRecord->addChild('FrontEndTrace',$this->getCompanySSS()) ;
-   //    $dataInpACHTransRecord->addChild('OriginatorName',$this->getBankAccount()->getParameter("company")) ;
+       // Unique ID that does not start with W. And can't be more than 12 characters
+       $feTrace = substr('K'.uniqid(), 0, 10);
+       $dataInpACHTransRecord->addChild('FrontEndTrace',$feTrace) ;
+       $dataInpACHTransRecord->addChild('OriginatorName',$this->getParameter("Company")) ;
 
-       $dataInpACHTransRecord->addChild('TransactionCode',$this->getCompanySSS()) ;  // PPD or CCD?
+       //TODO - We need to determine whether this is PPD or CCD?
+       $dataInpACHTransRecord->addChild('TransactionCode',$this->getParameter('TransactionType')) ;  // PPD or CCD?
 
        // DEBIT or CREDIT - Use 'D' or 'C' Don't know if ACH works can handle lower caase, so just make sure it's UPPER
        $dataInpACHTransRecord->addChild('CustTransType',strtoupper($custTransType)) ;
 
-       $dataInpACHTransRecord->addChild('CustomerID',$this->getCompanySSS()) ;
-
-        var_dump("BankAcct", $this->getBankAccount());
+       $dataInpACHTransRecord->addChild('CustomerID',$this->getBankAccount()->getName()) ;
 
        $fname = $this->getBankAccount()->getFirstName();
        $lname = $this->getBankAccount()->getLastName();
@@ -286,17 +233,16 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
 
        date_default_timezone_set('UTC');
        $dataInpACHTransRecord->addChild('CheckOrTransDate',date('Y-m-d')) ;
-       $dataInpACHTransRecord->addChild('EffectiveDate',$this->getCompanySSS()) ;
-       $dataInpACHTransRecord->addChild('Memo',$this->getMemo()) ;
+        // The $$ amount will not be sent to ACH until this date
+       $dataInpACHTransRecord->addChild('EffectiveDate',date('Y-m-d')) ;
+       $memoStr = substr($this->getMemo(), 0, 10); // Memo can't be longer then 10 characters
+       $dataInpACHTransRecord->addChild('Memo',$memoStr) ;
 
        //  'S' for Single Entry or 'R' for recurring.
-       $dataInpACHTransRecord->addChild('OpCode',$this->getCompanySSS()) ;
-
-       // The $$ amount will not be sent to ACH until this date
-       $dataInpACHTransRecord->addChild('EffectiveDate',$this->getCompanySSS()) ;
+       $dataInpACHTransRecord->addChild('OpCode',$this->getParameter('OpCode')) ;
 
        // Merchant's may have multiple account sets. IE; Account set 1 = BofA, Account set 2 = WellsFarge
-       $dataInpACHTransRecord->addChild('AccountSet',$this->getCompanySSS()) ;
+       $dataInpACHTransRecord->addChild('AccountSet',$this->getParameter('AccountSet')) ;
        return $data;
    }
 
@@ -320,16 +266,16 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
             'Content-Type' => 'text/xml; charset=utf-8',
             'SOAPAction' => $this->namespace.$data->getName());
 
-        var_dump("SendData Headers:", $headers);
         var_dump("SendData data:", $document->saveXML());
 
+        $httpResponse = $this->httpClient->post($this->getEndpoint(), $headers, $document->saveXML())->send();
 
-        $httpResponse = $this->httpClient->post($this->endpoint, $headers, $document->saveXML())->send();
+        var_dump("SendDataResponse;", $httpResponse->getBody());
 
-        var_dump("SendDataResponse;", $httpResponse);
-
+        $theResponse = strtolower($httpResponse->getMessage());
+        var_dump($theResponse);
         return $this->response = new Response($this, $httpResponse->getBody());
-    }
+     }
     public function getEndpoint()
     {
         return $this->getDeveloperMode() ? $this->developerEndpoint : $this->liveEndpoint;

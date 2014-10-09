@@ -8,19 +8,25 @@ use Omnipay\ACHWorks;
 
 class RefundRequestTest extends ACHWorksTest
 {
-
     public function setUp()
     {
         parent::setUp();
 
         $this->request = new RefundRequest($this->getHttpClient(), $this->getHttpRequest());
+
         $this->request->initialize(
             array(
-                'clientIp' => '10.0.0.1',
-                'amount' => '12.00',
-                'customerId' => 'cust-id',
-                'card' => $this->getValidCard(),
+                'amount' => '172.00',
                 'bankAccount' => $this->bankAccount,
+                'developerMode' => true,
+                'memo'=> 'RefundTest-ACHWorks',
+                'SSS' => 'TST',
+                'LocID' => '9505',
+                'CompanyKey' => 'SASD%!%$DGLJGWYRRDGDDUDFDESDHDD',
+                'Company' => 'MYCOMPANY',
+                'TransactionType' => 'PPD',
+                'OpCode' => 'S',
+                'AccountSet' => '1',
             )
         );
     }
@@ -30,12 +36,11 @@ class RefundRequestTest extends ACHWorksTest
         $data = $this->request->getData();
         $this->request->setTestMode(true);
 
-        $resp= $this->request->sendData($data);
+        $this->request->send($data);
+      //  var_dump("RefundRequest:testGetData", $response);
 
-        var_dump("RefundRequestTest-sendData", $resp);
-        $this->assertSame('AUTH_CAPTURE', $data['x_type']);
-        $this->assertSame('10.0.0.1', $data['x_customer_ip']);
-        $this->assertSame('cust-id', $data['x_cust_id']);
-        $this->assertArrayNotHasKey('x_test_request', $data);
+      //  $this->assertSame('BADOK', $response['reasonPhrase']);
+      //  $this->assertSame(200, $response['statusCode']);
+   //    $this->assertArrayNotHasKey('x_test_request', $data);
     }
 }

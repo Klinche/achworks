@@ -5,10 +5,6 @@ namespace Omnipay\ACHWorks;
 
 use Omnipay\ACHWorks\Message\ConnectionCheckRequest;
 use Omnipay\ACHWorks\Message\CheckCompanyStatusRequest;
-use Omnipay\ACHWorks\Message\SendACHTransRequest;
-use Omnipay\ACHWorks\Message\GetACHReturnsRequest;
-use Omnipay\ACHWorks\Message\GetResultFileRequest;
-use Omnipay\ACHWorks\Message\GetErrorFileRequest;
 use Omnipay\Common\AbstractGateway;
 
 
@@ -18,6 +14,10 @@ use Omnipay\Common\AbstractGateway;
 class ACHWorksWSGateway extends AbstractGateway
 {
 
+    // ACHWorks saop ver4 guide.pdf says for testing use these credentials  (Sect 3.1.1 - 3.1.3)
+    protected $_companySSS_TST = "TST";
+    protected $_companyLocID_TST = "9502";
+    protected $_company_TST = "MY COMPANY";
 
     /* Default Abstract Gateway methods that need to be overridden */
     public function getName()
@@ -42,6 +42,7 @@ class ACHWorksWSGateway extends AbstractGateway
     {
         return $this->setParameter('hashSecret', $value);
     }
+
 
     public function purchase(array $parameters = array())
     {

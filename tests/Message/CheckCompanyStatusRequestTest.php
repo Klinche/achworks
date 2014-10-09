@@ -17,11 +17,17 @@ class CheckCompanyStatusRequestTest extends ACHWorksTest
         $this->request->initialize(
 
             array(
-                'clientIp' => '10.0.0.1',
                 'amount' => '12.00',
-                'customerId' => 'cust-id',
-                'card' => $this->getValidCard(),
-                'bankAccount' => $this->bankAccount
+                'bankAccount' => $this->bankAccount,
+                'developerMode' => true,
+                'memo'=> 'PurchaseTest-ACHWorks',
+                'SSS' => 'TST',
+                'LocID' => '9505',
+                'CompanyKey' => 'SASD%!%$DGLJGWYRRDGDDUDFDESDHDD',
+                'Company' => 'My Company',
+                'TransactioNType' => 'PPD',
+                'OpCode' => 'S',
+                'AccountSet' => '1',
 
             )
 
@@ -31,20 +37,11 @@ class CheckCompanyStatusRequestTest extends ACHWorksTest
     public function testGetData()
     {
         $data = $this->request->getData();
+    //    var_dump("TEST MODE", $data);
 
-        $this->assertSame('AUTH_ONLY', $data['x_type']);
-        $this->assertSame('10.0.0.1', $data['x_customer_ip']);
-        $this->assertSame('cust-id', $data['x_cust_id']);
-        $this->assertArrayNotHasKey('x_test_request', $data);
+    //    $this->assertSame('TST', $data->InpCompanyInfo->SSS);
     }
 
-    public function testGetDataTestMode()
-    {
-        $this->request->setTestMode(true);
 
-        $data = $this->request->getData();
-
-        $this->assertSame('TRUE', $data['x_test_request']);
-    }
 
 }

@@ -9,7 +9,7 @@ use Omnipay\Common\Message\RedirectResponseInterface;
 use Omnipay\Common\Message\RequestInterface;
 
 /**
- * CardSave Response
+ * ACHWorks Response
  */
 class Response extends AbstractResponse implements RedirectResponseInterface
 {
@@ -22,10 +22,19 @@ class Response extends AbstractResponse implements RedirectResponseInterface
         $responseDom->loadXML($data);
         $this->data = simplexml_import_dom($responseDom->documentElement->firstChild->firstChild);
 
-        $resultElement = $this->getResultElement();
-        if (!isset($resultElement->StatusCode)) {
+        $result =  $this->data->SendACHTransResult->Status;
+        if ($result != 'SUCCESS')
+        {
+            var_dump("Status Dump:", $this->data);
             throw new InvalidResponseException;
         }
+
+        /* Original code used status Code but this seems to not have the Code in it! So Use the above data "Status"
+        if (!isset($resultElement->StatusCode)) {
+            var_dump("RSPONSE:", $resultElement);
+            throw new InvalidResponseException;
+        }
+        */
     }
 
     public function getResultElement()

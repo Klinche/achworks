@@ -21,7 +21,18 @@ class ACHWorksTest extends TestCase
         $this->bankAccount->setBankAccountType(BankAccount::ACCOUNT_TYPE_CHECKING);
         $this->bankAccount->setBillingFirstName("Mikey");
         $this->bankAccount->setBillingLastName("DABLname");
+        $this->bankAccount->setName("Mikey DABLname");
+        $this->bankAccount->setBillingAddress1("15505 Pennsylvania Ave.");
+        $this->bankAccount->setBillingCity("Washington DC");
+        $this->bankAccount->setBillingName("FED-Payor");
+        $this->bankAccount->setBillingPostcode("20003");
+        $this->bankAccount->setBillingState("DC, NE");
         $this->bankAccount->setCompany("DAB2LLC");
+
+    }
+    public function testSetUp()
+    {
+        $data = $this->setUp();
 
     }
 }

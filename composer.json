@@ -12,16 +12,16 @@
         "pay",
         "payment"
     ],
-    "homepage": "https://github.com/omnipay/achworks",
+    "homepage": "https://github.com/DABSquared/achworks",
     "license": "MIT",
     "authors": [
         {
-            "name": "Adrian Macneil",
-            "email": "adrian@adrianmacneil.com"
+            "name": "Michael Brooks",
+            "email": "micahel_brooks@dabsquared.com"
         },
         {
-            "name": "Omnipay Contributors",
-            "homepage": "https://github.com/omnipay/authorizenet/contributors"
+            "name": "DABSquared",
+            "homepage": "https://github.com/DABSquared"
         }
     ],
     "autoload": {

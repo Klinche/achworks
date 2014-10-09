@@ -24,7 +24,7 @@ class PurchaseRequestTest extends ACHWorksTest
                 'SSS' => 'TST',
                 'LocID' => '9505',
                 'CompanyKey' => 'SASD%!%$DGLJGWYRRDGDDUDFDESDHDD',
-                'Company' => 'My Company',
+                'Company' => 'MYCOMPANY',
                 'TransactioNType' => 'PPD',
                 'OpCode' => 'S',
                 'AccountSet' => '1',

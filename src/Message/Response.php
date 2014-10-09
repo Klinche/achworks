@@ -13,28 +13,50 @@ use Omnipay\Common\Message\RequestInterface;
  */
 class Response extends AbstractResponse implements RedirectResponseInterface
 {
+    private $StatusOK = false;
+
     public function __construct(RequestInterface $request, $data)
     {
         $this->request = $request;
 
-        // we only care about the content of the soap:Body element
+        if ($data->getStatusCode() != 200)
+            throw new InvalidResponseException;
+
         $responseDom = new DOMDocument;
-        $responseDom->loadXML($data);
+        $responseDom->loadXML($data->getBody());
+  //      var_dump("ResponseDOM", $responseDom);
         $this->data = simplexml_import_dom($responseDom->documentElement->firstChild->firstChild);
+     //   var_dump("RESPONSE DATA", $this->data);
 
-        $result =  $this->data->SendACHTransResult->Status;
-        if ($result != 'SUCCESS')
+        switch (strtolower($this->data->getName()))
         {
-            var_dump("Status Dump:", $this->data);
-            throw new InvalidResponseException;
+            case 'sendachtransresponse':
+                $result =  strtolower($this->data->SendACHTransResult->Status);
+                if ($result != 'success')
+                {
+                    var_dump("Status Dump:", $this->data);
+                    throw new InvalidResponseException;
+                }
+                else
+                {
+                    $StatusOK = true;
+                    return;
+                }
+                break;
+            case 'connectioncheckresponse':
+                $result = strtolower($this->data->ConnectionCheckResult);
+                 if (strpos($result,'success') !== FALSE)
+                 {
+                     $StatusOK = true;
+                     return;
+                 }
+                    else
+                      throw new InvalidResponseException;
+                break;
+            default:
+                var_dump("Default", $this->data->getName());
+                throw new InvalidResponseException;
         }
-
-        /* Original code used status Code but this seems to not have the Code in it! So Use the above data "Status"
-        if (!isset($resultElement->StatusCode)) {
-            var_dump("RSPONSE:", $resultElement);
-            throw new InvalidResponseException;
-        }
-        */
     }
 
     public function getResultElement()
@@ -46,13 +68,14 @@ class Response extends AbstractResponse implements RedirectResponseInterface
 
     public function isSuccessful()
     {
-        return 0 === (int) $this->getResultElement()->StatusCode;
+        return 0 === (int) $this->StatusOK;
     }
 
     public function isRedirect()
     {
-        return 3 === (int) $this->getResultElement()->StatusCode;
+        return 3 === (int) $this->StatusOK;
     }
+
 
     public function getTransactionReference()
     {

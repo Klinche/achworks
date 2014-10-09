@@ -16,12 +16,11 @@ class ConnectionCheckRequestTest extends ACHWorksTest
         $this->request = new ConnectionCheckRequest($this->getHttpClient(), $this->getHttpRequest());
         $this->request->initialize(
             array(
-                'clientIp' => '10.0.0.1',
-                'amount' => '12.00',
-                'customerId' => 'cust-id',
-                'card' => $this->getValidCard(),
-                'bankAccount' => $this->bankAccount
-
+                'developerMode' => true,
+                 'SSS' => 'TST',
+                'LocID' => '9505',
+                'CompanyKey' => 'SASD%!%$DGLJGWYRRDGDDUDFDESDHDD',
+                'Company' => 'MYCOMPANY',
             )
         );
     }
@@ -29,6 +28,9 @@ class ConnectionCheckRequestTest extends ACHWorksTest
     public function testGetData()
     {
         $data = $this->request->getData();
+        $this->request->setTestMode(true);
+
+        $this->request->send($data);
 
    //     $this->assertSame('TST', $data['SSS']);
     //    $this->assertSame('10.0.0.1', $data['x_customer_ip']);

@@ -1,5 +1,5 @@
 {
-    "name": "omnipay/ACHWorks",
+    "name": "omnipay/achworks",
     "type": "library",
     "description": "ACHWorks gateway for the Omnipay payment processing library",
     "keywords": [

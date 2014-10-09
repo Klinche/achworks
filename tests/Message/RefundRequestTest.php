@@ -5,6 +5,7 @@ namespace Omnipay\ACHWorks\Message;
 use Omnipay\Tests\TestCase;
 use Omnipay\ACHWorks\BankAccount;
 use Omnipay\ACHWorks;
+use DOMDocument;
 
 class RefundRequestTest extends ACHWorksTest
 {
@@ -35,11 +36,14 @@ class RefundRequestTest extends ACHWorksTest
     {
         $data = $this->request->getData();
         $this->request->setTestMode(true);
+        /**
+         * @var ResponseInterface
+         */
+        $response =  $this->request->send($data);
 
-        $this->request->send($data);
-      //  var_dump("RefundRequest:testGetData", $response);
+        var_dump("RefundRequest:testGetData", $response);
 
-      //  $this->assertSame('BADOK', $response['reasonPhrase']);
+         $this->assertEquals(true, $response->isSuccessful());
       //  $this->assertSame(200, $response['statusCode']);
    //    $this->assertArrayNotHasKey('x_test_request', $data);
     }

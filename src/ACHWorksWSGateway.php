@@ -7,7 +7,6 @@ use Omnipay\ACHWorks\Message\ConnectionCheckRequest;
 use Omnipay\ACHWorks\Message\CheckCompanyStatusRequest;
 use Omnipay\Common\AbstractGateway;
 
-
 /**
  * ACHWorksWS - Soap Gateway
  */

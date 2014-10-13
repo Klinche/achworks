@@ -15,11 +15,11 @@ class ACHWorksGateWayTest extends GatewayTestCase
         parent::setUp();
 
 
-        $bankAccount = new BankAccount();
-        $bankAccount->setAccountNumber("0512-351217");
-        $bankAccount->setRoutingNumber("4271-04991");
-        $bankAccount->setBankName("Mikey National Bank");
-        $bankAccount->setBankAccountType(BankAccount::ACCOUNT_TYPE_CHECKING);
+        $bankAccountPayee = new BankAccount();
+        $bankAccountPayee->setAccountNumber("0512-351217");
+        $bankAccountPayee->setRoutingNumber("4271-04991");
+        $bankAccountPayee->setBankName("Mikey National Bank");
+        $bankAccountPayee->setBankAccountType(BankAccount::ACCOUNT_TYPE_CHECKING);
 
         $this->gateway = new ACHWorksWSGateway($this->getHttpClient(), $this->getHttpRequest());
 
@@ -28,7 +28,7 @@ class ACHWorksGateWayTest extends GatewayTestCase
 
         $this->purchaseOptions = array(
             'amount' => '10.00',
-            'bankAccountPayee' => $this->bankAccount,
+            'bankAccountPayee' => $this->$bankAccountPayee,
 
         );
         //    $response = $this->gateway->purchase($this->purchaseOptions);

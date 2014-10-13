@@ -13,7 +13,7 @@ use Omnipay\ACHWorks;
  */
 abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
 {
-    protected $liveEndpoint = 'http://tstsvr.achworks.com/dnet/achws.asmx';  // NEED TO CHANGE WHEN PROVIDED
+    protected $liveEndpoint = 'http://tstsvr.achworks.com/dnet/achws.asmx';  // TODO NEED TO CHANGE WHEN PROVIDED
     protected $developerEndpoint = 'http://tstsvr.achworks.com/dnet/achws.asmx';
     protected $namespace  = "http://achworks.com/";
 
@@ -80,18 +80,18 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
         return $this->setParameter('hashSecret', $value);
     }
 
-    public function getBankAccount()
+    public function getBankAccountPayee()
     {
-        return $this->getParameter('bankAccount');
+        return $this->getParameter('bankAccountPayee');
     }
 
-    public function setBankAccount($value)
+    public function setBankAccountPayee($value)
     {
         if ($value && !$value instanceof BankAccount) {
             $value = new BankAccount($value);
         }
 
-        return $this->setParameter('bankAccount', $value);
+        return $this->setParameter('bankAccountPayee', $value);
     }
 
     //
@@ -208,24 +208,24 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
        // DEBIT or CREDIT - Use 'D' or 'C' Don't know if ACH works can handle lower caase, so just make sure it's UPPER
        $dataInpACHTransRecord->addChild('CustTransType',strtoupper($custTransType)) ;
 
-       $dataInpACHTransRecord->addChild('CustomerID',$this->getBankAccount()->getName()) ;
+       $dataInpACHTransRecord->addChild('CustomerID',$this->getBankAccountPayee()->getName()) ;
 
-       $fname = $this->getBankAccount()->getFirstName();
-       $lname = $this->getBankAccount()->getLastName();
+       $fname = $this->getBankAccountPayee()->getFirstName();
+       $lname = $this->getBankAccountPayee()->getLastName();
 
        $custLFname = strtoupper($fname.",". $lname);
        $dataInpACHTransRecord->addChild('CustomerName',$custLFname) ;
-       $dataInpACHTransRecord->addChild('CustomerRoutingNo',$this->getBankAccount()->getRoutingNumber()) ;
-       $dataInpACHTransRecord->addChild('CustomerAcctNo',$this->getBankAccount()->getAccountNumber()) ;
+       $dataInpACHTransRecord->addChild('CustomerRoutingNo',$this->getBankAccountPayee()->getRoutingNumber()) ;
+       $dataInpACHTransRecord->addChild('CustomerAcctNo',$this->getBankAccountPayee()->getAccountNumber()) ;
 
         // Checking 'C' or Savings  'S'
-        if ($this->getBankAccount()->getBankAccountType() == BankAccount::ACCOUNT_TYPE_CHECKING)
+        if ($this->getBankAccountPayee()->getBankAccountType() == BankAccount::ACCOUNT_TYPE_CHECKING)
             $dataInpACHTransRecord->addChild('CustomerAcctType',"C") ;
         else
-          if ($this->getBankAccount()->getBankAccountType() == BankAccount::ACCOUNT_TYPE_SAVINGS)
+          if ($this->getBankAccountPayee()->getBankAccountType() == BankAccount::ACCOUNT_TYPE_SAVINGS)
             $dataInpACHTransRecord->addChild('CustomerAcctType',"S") ;
         else
-          if ($this->getBankAccount()->getBankAccountType() == BankAccount::ACCOUNT_TYPE_BUSINESS_CHECKING)
+          if ($this->getBankAccountPayee()->getBankAccountType() == BankAccount::ACCOUNT_TYPE_BUSINESS_CHECKING)
             $dataInpACHTransRecord->addChild('CustomerAcctType',"C") ;
 
        $dataInpACHTransRecord->addChild('TransAmount',$this->getAmount()) ;
@@ -271,7 +271,7 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
         $httpResponse = $this->httpClient->post($this->getEndpoint(), $headers, $document->saveXML())->send();
 
         $theResponse = strtolower($httpResponse->getMessage());
-        var_dump($theResponse);
+        var_dump("sendData:",$theResponse);
         return $this->response = new Response($this, $httpResponse);
      }
     public function getEndpoint()

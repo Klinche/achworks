@@ -10,9 +10,7 @@ use SimpleXMLElement;
  */
 class PurchaseRequest extends AuthorizeRequest
 {
-    protected $namespace = 'http://achworks.com/';
-    protected $endpoint = 'http://tstsvr.achworks.com/dnet/';  // NEED TO CHANGE WHEN PROVIDED
-    protected $developerEndpoint = 'http://tstsvr.achworks.com/dnet/';
+    public $transactionType = 'PAYMENT';
 
     public function getMerchantId()
     {

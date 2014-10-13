@@ -18,7 +18,7 @@ class RefundRequestTest extends ACHWorksTest
         $this->request->initialize(
             array(
                 'amount' => '172.00',
-                'bankAccount' => $this->bankAccount,
+                'bankAccountPayee' => $this->bankAccountPayee,
                 'developerMode' => true,
                 'memo'=> 'RefundTest-ACHWorks',
                 'SSS' => 'TST',
@@ -40,11 +40,6 @@ class RefundRequestTest extends ACHWorksTest
          * @var ResponseInterface
          */
         $response =  $this->request->send($data);
-
-        var_dump("RefundRequest:testGetData", $response);
-
-         $this->assertEquals(true, $response->isSuccessful());
-      //  $this->assertSame(200, $response['statusCode']);
-   //    $this->assertArrayNotHasKey('x_test_request', $data);
-    }
+        $this->assertEquals(true, $response->isSuccessful());
+     }
 }

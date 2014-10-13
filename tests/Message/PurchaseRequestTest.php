@@ -17,8 +17,9 @@ class PurchaseRequestTest extends ACHWorksTest
 
         $this->request->initialize(
             array(
+
                 'amount' => '12.00',
-                'bankAccount' => $this->bankAccount,
+                'bankAccountPayee' => $this->bankAccountPayee,
                 'developerMode' => true,
                 'memo'=> 'PurchaseTest-ACHWorks',
                 'SSS' => 'TST',
@@ -37,7 +38,8 @@ class PurchaseRequestTest extends ACHWorksTest
         $data = $this->request->getData();
         $this->request->setTestMode(true);
 
-   //     $resp= $this->request->sendData($data);
+        $response = $this->request->sendData($data);
+        $this->assertEquals(true, $response->isSuccessful());
 
       }
 }

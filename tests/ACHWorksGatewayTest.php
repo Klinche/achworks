@@ -27,7 +27,7 @@ class ACHWorksGateWayTest extends GatewayTestCase
 
        $this->purchaseOptions = array(
             'amount' => '10.00',
-            'bankAccount' => $this->bankAccount,
+            'bankAccountPayee' => $this->bankAccount,
 
         );
     //    $response = $this->gateway->purchase($this->purchaseOptions);

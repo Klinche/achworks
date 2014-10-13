@@ -2,46 +2,45 @@
 
 namespace Omnipay\ACHWorks\Message;
 
-use Omnipay\Tests\TestCase;
 use Omnipay\ACHWorks\BankAccount;
 use Omnipay\ACHWorks;
-class CheckCompanyStatusRequestTest extends ACHWorksTest
+use Omnipay\Omnipay;
+
+class AchToAchtTest extends ACHWorksTest
 {
 
     public function setUp()
     {
-
         parent::setUp();
 
-        $this->request = new CheckCompanyStatusRequest($this->getHttpClient(), $this->getHttpRequest());
-        $this->request->initialize(
+        $this->request = new PurchaseRequest($this->getHttpClient(), $this->getHttpRequest());
 
+        $this->request->initialize(
             array(
+
                 'amount' => '12.00',
+                'bankAccountPayor' => $this->bankAccountPayee,
                 'bankAccountPayee' => $this->bankAccountPayee,
                 'developerMode' => true,
                 'memo'=> 'PurchaseTest-ACHWorks',
                 'SSS' => 'TST',
                 'LocID' => '9505',
                 'CompanyKey' => 'SASD%!%$DGLJGWYRRDGDDUDFDESDHDD',
-                'Company' => 'MyCompany',
+                'Company' => 'MYCOMPANY',
                 'TransactioNType' => 'PPD',
                 'OpCode' => 'S',
                 'AccountSet' => '1',
-            )
+           )
         );
     }
 
     public function testGetData()
     {
         $data = $this->request->getData();
+        $this->request->setTestMode(true);
+
         $response = $this->request->sendData($data);
+        $this->assertEquals(true, $response->isSuccessful());
 
-        // We fail because there is no valid $$ for this account
-        $this->assertEquals(false, $response->isSuccessful());
-
-    }
-
-
-
+      }
 }

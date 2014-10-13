@@ -30,11 +30,8 @@ class ConnectionCheckRequestTest extends ACHWorksTest
         $data = $this->request->getData();
         $this->request->setTestMode(true);
 
-        $this->request->send($data);
+        $response = $this->request->send($data);
+        $this->assertEquals(true, $response->isSuccessful());
 
-   //     $this->assertSame('TST', $data['SSS']);
-    //    $this->assertSame('10.0.0.1', $data['x_customer_ip']);
-    //    $this->assertSame('cust-id', $data['x_cust_id']);
-    //    $this->assertArrayNotHasKey('x_test_request', $data);
     }
 }

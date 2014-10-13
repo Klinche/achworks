@@ -14,6 +14,7 @@ use Omnipay\Common\Message\RequestInterface;
 class Response extends AbstractResponse implements RedirectResponseInterface
 {
     private $StatusOK = false;
+    private $ACHWorksResponseMessage = "";
 
     public function __construct(RequestInterface $request, $data)
     {
@@ -34,24 +35,50 @@ class Response extends AbstractResponse implements RedirectResponseInterface
                 $result =  strtolower($this->data->SendACHTransResult->Status);
                 if ($result != 'success')
                 {
-                    var_dump("Status Dump:", $this->data);
-                    throw new InvalidResponseException;
+                    $this->StatusOK = false;
+                    return;
                 }
                 else
                 {
-                    $StatusOK = true;
+                    $this->StatusOK = true;
                     return;
                 }
-                break;
+               break;
             case 'connectioncheckresponse':
                 $result = strtolower($this->data->ConnectionCheckResult);
                  if (strpos($result,'success') !== FALSE)
                  {
-                     $StatusOK = true;
+                     $this->StatusOK = true;
                      return;
                  }
-                    else
-                      throw new InvalidResponseException;
+                 else if (strpos($result,'rejected'))
+                 {
+                    $this->StatusOK = false;
+                    return;
+                }
+                else
+                 {
+                     throw new InvalidResponseException;
+                 }
+                break;
+            case 'checkcompanystatusresponse':
+                $result = strtolower($this->data->CheckCompanyStatusResult);
+                $ACHWorksResponseMessage = $result;
+                if (strpos($result,'success') !== FALSE)
+                {
+                    $this->StatusOK = true;
+                    return;
+                }
+                else if (strpos($result,'rejected') !== FALSE)
+                {
+                    var_dump("CompanyStatusResponse:", $result);
+                    $this->StatusOK = false;
+                    return;
+                }
+                else
+                {
+                    throw new InvalidResponseException;
+                }
                 break;
             default:
                 var_dump("Default", $this->data->getName());
@@ -59,16 +86,21 @@ class Response extends AbstractResponse implements RedirectResponseInterface
         }
     }
 
+    public function getACHWorksResponseMessage()
+    {
+        return $this->ACHWorksResponseMessage;
+    }
+
     public function getResultElement()
     {
-        $resultElement = preg_replace('/Response$/', 'Result', $this->data->getName());
+        $resultElement =  $this->data->getName();
 
         return $this->data->$resultElement;
     }
 
     public function isSuccessful()
     {
-        return 0 === (int) $this->StatusOK;
+        return  $this->StatusOK;
     }
 
     public function isRedirect()
@@ -84,7 +116,7 @@ class Response extends AbstractResponse implements RedirectResponseInterface
 
     public function getMessage()
     {
-        return (string) $this->getResultElement()->Message;
+        return (string) $this->ACHWorksResponseMessage;
     }
 
     public function getRedirectUrl()

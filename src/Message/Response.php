@@ -22,8 +22,7 @@ class Response extends AbstractResponse implements RedirectResponseInterface
 
         $this->request = $request;
 
-        if ($data->getStatusCode() != $this->VALID_RESPONSE)
-        {
+        if ($data->getStatusCode() != $this->VALID_RESPONSE) {
             throw new InvalidResponseException;
         }
 

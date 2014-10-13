@@ -219,17 +219,12 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
         $dataInpACHTransRecord->addChild('CustomerAcctNo', $this->getBankAccountPayee()->getAccountNumber());
 
         // Checking 'C' or Savings  'S'
-        if ($this->getBankAccountPayee()->getBankAccountType() == BankAccount::ACCOUNT_TYPE_CHECKING)
-        {
-             $dataInpACHTransRecord->addChild('CustomerAcctType', "C");
-        }
-        elseif ($this->getBankAccountPayee()->getBankAccountType() ==  BankAccount::ACCOUNT_TYPE_SAVINGS)
-        {
-                $dataInpACHTransRecord->addChild('CustomerAcctType', "S");
-        }
-        elseif ($this->getBankAccountPayee()->getBankAccountType() == BankAccount::ACCOUNT_TYPE_BUSINESS_CHECKING)
-        {
-                $dataInpACHTransRecord->addChild('CustomerAcctType', "C");
+        if ($this->getBankAccountPayee()->getBankAccountType() == BankAccount::ACCOUNT_TYPE_CHECKING) {
+            $dataInpACHTransRecord->addChild('CustomerAcctType', "C");
+        } elseif ($this->getBankAccountPayee()->getBankAccountType() == BankAccount::ACCOUNT_TYPE_SAVINGS) {
+            $dataInpACHTransRecord->addChild('CustomerAcctType', "S");
+        } elseif ($this->getBankAccountPayee()->getBankAccountType() == BankAccount::ACCOUNT_TYPE_BUSINESS_CHECKING) {
+            $dataInpACHTransRecord->addChild('CustomerAcctType', "C");
         }
 
         $dataInpACHTransRecord->addChild('TransAmount', $this->getAmount());

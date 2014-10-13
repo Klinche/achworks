@@ -9,8 +9,7 @@ class ACHWorksGateWayTest extends GatewayTestCase
     protected $voidOptions;
 
     public $gateway = null;
-
-    public function setUp()
+   public function setUp()
     {
         parent::setUp();
 
@@ -28,7 +27,7 @@ class ACHWorksGateWayTest extends GatewayTestCase
 
         $this->purchaseOptions = array(
             'amount' => '10.00',
-            'bankAccountPayee' => $this->$bankAccountPayee,
+            'bankAccountPayee' => $bankAccountPayee,
 
         );
         //    $response = $this->gateway->purchase($this->purchaseOptions);

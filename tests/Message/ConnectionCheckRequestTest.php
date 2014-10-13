@@ -17,7 +17,7 @@ class ConnectionCheckRequestTest extends ACHWorksTest
         $this->request->initialize(
             array(
                 'developerMode' => true,
-                 'SSS' => 'TST',
+                'SSS' => 'TST',
                 'LocID' => '9505',
                 'CompanyKey' => 'SASD%!%$DGLJGWYRRDGDDUDFDESDHDD',
                 'Company' => 'MYCOMPANY',

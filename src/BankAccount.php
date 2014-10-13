@@ -114,7 +114,7 @@ class BankAccount
 
     public function getNumberLastFour()
     {
-        return substr($this->getAccountNumber(), -4, 4) ?: null;
+        return substr($this->getAccountNumber(), -4, 4) ? : null;
     }
 
     public function getRoutingNumber()
@@ -125,7 +125,7 @@ class BankAccount
     public function setRoutingNumber($value)
     {
         // strip non-numeric characters
-         return $this->setParameter('routingNumber', preg_replace('/\D/', '', $value));
+        return $this->setParameter('routingNumber', preg_replace('/\D/', '', $value));
     }
 
     public function getBankAccountType()
@@ -194,7 +194,7 @@ class BankAccount
 
     public function setStartMonth($value)
     {
-        return $this->setParameter('startMonth', (int) $value);
+        return $this->setParameter('startMonth', (int)$value);
     }
 
     public function getStartYear()

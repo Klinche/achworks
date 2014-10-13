@@ -21,7 +21,7 @@ class PurchaseRequestTest extends ACHWorksTest
                 'amount' => '12.00',
                 'bankAccountPayee' => $this->bankAccountPayee,
                 'developerMode' => true,
-                'memo'=> 'PurchaseTest-ACHWorks',
+                'memo' => 'PurchaseTest-ACHWorks',
                 'SSS' => 'TST',
                 'LocID' => '9505',
                 'CompanyKey' => 'SASD%!%$DGLJGWYRRDGDDUDFDESDHDD',
@@ -29,7 +29,7 @@ class PurchaseRequestTest extends ACHWorksTest
                 'TransactioNType' => 'PPD',
                 'OpCode' => 'S',
                 'AccountSet' => '1',
-           )
+            )
         );
     }
 
@@ -41,5 +41,5 @@ class PurchaseRequestTest extends ACHWorksTest
         $response = $this->request->sendData($data);
         $this->assertEquals(true, $response->isSuccessful());
 
-      }
+    }
 }

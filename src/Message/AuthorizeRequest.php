@@ -15,8 +15,8 @@ class AuthorizeRequest extends AbstractRequest
 
         if ($card = $this->getCard()) {
             $card->validate();
-         } elseif ($bankAccountPayee = $this->getBankAccount()) {
+        } elseif ($bankAccountPayee = $this->getBankAccount()) {
             $bankAccountPayee->validate();
-         }
-   }
+        }
+    }
 }

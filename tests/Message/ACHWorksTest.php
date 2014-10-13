@@ -30,6 +30,7 @@ class ACHWorksTest extends TestCase
         $this->bankAccountPayee->setCompany("DAB2LLC");
 
     }
+
     public function testSetUp()
     {
         $data = $this->setUp();

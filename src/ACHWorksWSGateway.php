@@ -47,7 +47,7 @@ class ACHWorksWSGateway extends AbstractGateway
     public function purchase(array $parameters = array())
     {
         return $this->createRequest('\Omnipay\ACHWorks\Message\PurchaseRequest', $parameters);
-     //   return $this->getHashSecret();
+        //   return $this->getHashSecret();
     }
 
     public function referencedPurchase(array $parameters = array())
@@ -68,7 +68,7 @@ class ACHWorksWSGateway extends AbstractGateway
      */
     public function connectionCheck(array $parameters = array())
     {
-         return $this->createRequest('\Omnipay\ACHWorks\Message\ConnectionCheckRequest', $parameters);
+        return $this->createRequest('\Omnipay\ACHWorks\Message\ConnectionCheckRequest', $parameters);
     }
 
     /*
@@ -110,5 +110,4 @@ class ACHWorksWSGateway extends AbstractGateway
     {
         return $this->createRequest('\Omnipay\ACHWorks\Message\GetErrorFileRequest', $parameters);
     }
-
 }

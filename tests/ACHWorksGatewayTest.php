@@ -9,6 +9,7 @@ class ACHWorksGateWayTest extends GatewayTestCase
     protected $voidOptions;
 
     public $gateway = null;
+
     public function setUp()
     {
         parent::setUp();
@@ -25,13 +26,13 @@ class ACHWorksGateWayTest extends GatewayTestCase
         $this->gateway->setTestMode(true);
         $this->gateway->connectionCheck();
 
-       $this->purchaseOptions = array(
+        $this->purchaseOptions = array(
             'amount' => '10.00',
             'bankAccountPayee' => $this->bankAccount,
 
         );
-    //    $response = $this->gateway->purchase($this->purchaseOptions);
-    //    var_dump("ACHWorksGatewayTest", $response);
+        //    $response = $this->gateway->purchase($this->purchaseOptions);
+        //    var_dump("ACHWorksGatewayTest", $response);
 
         $this->captureOptions = array(
             'amount' => '10.00',
@@ -42,5 +43,4 @@ class ACHWorksGateWayTest extends GatewayTestCase
             'transactionReference' => '12345',
         );
     }
-
 }

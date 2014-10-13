@@ -5,6 +5,7 @@ namespace Omnipay\ACHWorks\Message;
 use Omnipay\Tests\TestCase;
 use Omnipay\ACHWorks\BankAccount;
 use Omnipay\ACHWorks;
+
 class CheckCompanyStatusRequestTest extends ACHWorksTest
 {
 
@@ -20,7 +21,7 @@ class CheckCompanyStatusRequestTest extends ACHWorksTest
                 'amount' => '12.00',
                 'bankAccountPayee' => $this->bankAccountPayee,
                 'developerMode' => true,
-                'memo'=> 'PurchaseTest-ACHWorks',
+                'memo' => 'PurchaseTest-ACHWorks',
                 'SSS' => 'TST',
                 'LocID' => '9505',
                 'CompanyKey' => 'SASD%!%$DGLJGWYRRDGDDUDFDESDHDD',
@@ -41,7 +42,4 @@ class CheckCompanyStatusRequestTest extends ACHWorksTest
         $this->assertEquals(false, $response->isSuccessful());
 
     }
-
-
-
 }

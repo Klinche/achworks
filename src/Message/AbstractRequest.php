@@ -219,13 +219,14 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
         $dataInpACHTransRecord->addChild('CustomerAcctNo', $this->getBankAccountPayee()->getAccountNumber());
 
         // Checking 'C' or Savings  'S'
-        if ($this->getBankAccountPayee()->getBankAccountType() == BankAccount::ACCOUNT_TYPE_CHECKING)
-            $dataInpACHTransRecord->addChild('CustomerAcctType', "C");
-        else
-            if ($this->getBankAccountPayee()->getBankAccountType() == BankAccount::ACCOUNT_TYPE_SAVINGS)
+        if ($this->getBankAccountPayee()->getBankAccountType() ==
+                                                                $this->getBankAccountPayee()->getAccountTypeChecking())
+             $dataInpACHTransRecord->addChild('CustomerAcctType', "C");
+        elseif ($this->getBankAccountPayee()->getBankAccountType() ==
+                                                                 $this->getBankAccountPayee()->getAccountTypeSavings())
                 $dataInpACHTransRecord->addChild('CustomerAcctType', "S");
-            else
-                if ($this->getBankAccountPayee()->getBankAccountType() == BankAccount::ACCOUNT_TYPE_BUSINESS_CHECKING)
+        elseif ($this->getBankAccountPayee()->getBankAccountType() ==
+                                                        $this->getBankAccountPayee()->getAccountTypeBusinessChecking())
                     $dataInpACHTransRecord->addChild('CustomerAcctType', "C");
 
         $dataInpACHTransRecord->addChild('TransAmount', $this->getAmount());
@@ -243,6 +244,8 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
 
         // Merchant's may have multiple account sets. IE; Account set 1 = BofA, Account set 2 = WellsFarge
         $dataInpACHTransRecord->addChild('AccountSet', $this->getParameter('AccountSet'));
+
+        var_dump("ACH DATA", $data);
         return $data;
     }
 

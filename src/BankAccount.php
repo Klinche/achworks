@@ -57,6 +57,19 @@ class BankAccount
         return $this;
     }
 
+    public function getAccountTypeBusinessChecking()
+    {
+        return BankAccount::ACCOUNT_TYPE_BUSINESS_CHECKING;
+    }
+    public function getAccountTypeSavings()
+    {
+        return BankAccount::ACCOUNT_TYPE_SAVINGS;
+    }
+    public function getAccountTypeChecking()
+    {
+        return BankAccount::ACCOUNT_TYPE_CHECKING;
+    }
+
     public function getParameters()
     {
         return $this->parameters->all();

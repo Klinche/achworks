@@ -15,12 +15,14 @@ class Response extends AbstractResponse implements RedirectResponseInterface
 {
     private $StatusOK = false;
     private $ACHWorksResponseMessage = "";
+    private $VALID_RESPONSE = 200;
 
     public function __construct(RequestInterface $request, $data)
     {
+
         $this->request = $request;
 
-        if ($data->getStatusCode() != 200)
+        if ($data->getStatusCode() != $this->VALID_RESPONSE)
             throw new InvalidResponseException;
 
         $responseDom = new DOMDocument;
@@ -42,7 +44,7 @@ class Response extends AbstractResponse implements RedirectResponseInterface
                 break;
             case 'connectioncheckresponse':
                 $result = strtolower($this->data->ConnectionCheckResult);
-                if (strpos($result, 'success') !== FALSE) {
+                if (strpos($result, 'success') !== false) {
                     $this->StatusOK = true;
                     return;
                 } elseif (strpos($result, 'rejected')) {

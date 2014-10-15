@@ -11,6 +11,7 @@ class ACHWorksTest extends TestCase
 {
     public $request = null;
     public $bankAccountPayee = null;
+    public $bankAccountPayor = null;
 
     public function setUp()
     {
@@ -28,6 +29,21 @@ class ACHWorksTest extends TestCase
         $this->bankAccountPayee->setBillingPostcode("20003");
         $this->bankAccountPayee->setBillingState("DC, NE");
         $this->bankAccountPayee->setCompany("DAB2LLC");
+
+        $this->bankAccountPayor = new BankAccount();
+        $this->bankAccountPayor->setAccountNumber("0512-351123");
+        $this->bankAccountPayor->setRoutingNumber("4271-04881");
+        $this->bankAccountPayor->setBankName("Freddy National Bank");
+        $this->bankAccountPayor->setBankAccountType(BankAccount::ACCOUNT_TYPE_CHECKING);
+        $this->bankAccountPayor->setBillingFirstName("Freddy");
+        $this->bankAccountPayor->setBillingLastName("DABLname");
+        $this->bankAccountPayor->setName("Freddy DABLname");
+        $this->bankAccountPayor->setBillingAddress1("15502 K Street");
+        $this->bankAccountPayor->setBillingCity("Washington DC");
+        $this->bankAccountPayor->setBillingName("FED-Payee");
+        $this->bankAccountPayor->setBillingPostcode("20003");
+        $this->bankAccountPayor->setBillingState("DC, NE");
+        $this->bankAccountPayor->setCompany("DAB2LLC2");
 
     }
 

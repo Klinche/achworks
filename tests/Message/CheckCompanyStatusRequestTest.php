@@ -26,9 +26,11 @@ class CheckCompanyStatusRequestTest extends ACHWorksTest
                 'LocID' => '9505',
                 'CompanyKey' => 'SASD%!%$DGLJGWYRRDGDDUDFDESDHDD',
                 'Company' => 'MyCompany',
-                'TransactioNType' => 'PPD',
+                'TransactionType' => 'PPD',
                 'OpCode' => 'S',
                 'AccountSet' => '1',
+                'CheckNumber' => '123',
+
             )
         );
     }

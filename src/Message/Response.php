@@ -62,7 +62,7 @@ class Response extends AbstractResponse implements RedirectResponseInterface
                     $this->StatusOK = true;
                     return;
                 } elseif (strpos($result, 'rejected') !== false) {
-               //     var_dump("CompanyStatusResponse:", $result);
+                    //     var_dump("CompanyStatusResponse:", $result);
                     $this->StatusOK = false;
                     return;
                 } else {

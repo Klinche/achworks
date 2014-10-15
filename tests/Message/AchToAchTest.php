@@ -22,12 +22,13 @@ class AchToAchtTest extends ACHWorksTest
                 'bankAccountPayor' => $this->bankAccountPayee,
                 'bankAccountPayee' => $this->bankAccountPayee,
                 'developerMode' => true,
+                'CheckNumber' => '123',
                 'memo' => 'PurchaseTest-ACHWorks',
                 'SSS' => 'TST',
                 'LocID' => '9505',
                 'CompanyKey' => 'SASD%!%$DGLJGWYRRDGDDUDFDESDHDD',
                 'Company' => 'MYCOMPANY',
-                'TransactioNType' => 'PPD',
+                'TransactionType' => 'PPD',
                 'OpCode' => 'S',
                 'AccountSet' => '1',
             )
@@ -41,6 +42,7 @@ class AchToAchtTest extends ACHWorksTest
 
         $response = $this->request->sendData($data);
         $this->assertEquals(true, $response->isSuccessful());
+        //      var_dump("achToAch", $response);
 
     }
 }

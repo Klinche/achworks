@@ -22,32 +22,39 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
         return $this->getParameter('memo');
     }
 
+    public function setAmount($value)
+    {
+        return $this->setParameter('amount', $value);
+    }
+
+    public function getAmount()
+    {
+        return $this->getParameter('amount');
+    }
+
+    public function setCheckNumber($value)
+    {
+        return $this->setParameter('CheckNumber', $value);
+    }
+
+    public function getCheckNumber()
+    {
+        return $this->getParameter('CheckNumber');
+    }
 
     public function setMemo($value)
     {
         return $this->setParameter('memo', $value);
     }
 
-
-    public function getCheckNumber()
+    public function getTransactionType()
     {
-        return $this->getParameter('checkNumber');
+        return $this->getParameter('TransactionType');
     }
 
-    public function setCheckNumber($value)
+    public function setTransactionType($value)
     {
-        return $this->setParameter('checkNumber', $value);
-    }
-
-
-    public function getTransactionKey()
-    {
-        return $this->getParameter('transactionKey');
-    }
-
-    public function setTransactionKey($value)
-    {
-        return $this->setParameter('transactionKey', $value);
+        return $this->setParameter('TransactionType', $value);
     }
 
     public function getDeveloperMode()
@@ -60,26 +67,6 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
         return $this->setParameter('developerMode', $value);
     }
 
-    public function getCustomerId()
-    {
-        return $this->getParameter('customerId');
-    }
-
-    public function setCustomerId($value)
-    {
-        return $this->setParameter('customerId', $value);
-    }
-
-    public function getHashSecret()
-    {
-        return $this->getParameter('hashSecret');
-    }
-
-    public function setHashSecret($value)
-    {
-        return $this->setParameter('hashSecret', $value);
-    }
-
     public function getBankAccountPayee()
     {
         return $this->getParameter('bankAccountPayee');
@@ -87,11 +74,21 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
 
     public function setBankAccountPayee($value)
     {
-        if ($value && !$value instanceof BankAccount) {
-            $value = new BankAccount($value);
-        }
+        //     if ($value && !$value instanceof BankAccount) {
+        //        $value = new BankAccount($value);
+        //   }
 
         return $this->setParameter('bankAccountPayee', $value);
+    }
+
+    public function setBankAccountPayor($value)
+    {
+        return $this->setParameter('bankAccountPayor', $value);
+    }
+
+    public function getBankAccountPayor()
+    {
+        return $this->getParameter('bankAccountPayor');
     }
 
     //
@@ -136,16 +133,6 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
         return $this->setParameter('CompanyKey', $value);
     }
 
-    public function getTransactionType()
-    {
-        return $this->getParameter('TransactionType');
-    }
-
-    public function setTransactionType($value)
-    {
-        return $this->setParameter('TransactionType', $value);
-    }
-
     public function getOpCode()
     {
         return $this->getParameter('OpCode');
@@ -170,7 +157,6 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
     protected function getInpCompanyData(SimpleXMLElement $data)
     {
         $inpCompanyInfo = $data->addChild('InpCompanyInfo');
-        $this->getHashSecret();
         $inpCompanyInfo->addChild('SSS', $this->getParameter('SSS'));
         $inpCompanyInfo->addChild('LocID', $this->getParameter('LocID'));
         $inpCompanyInfo->addChild('Company', $this->getParameter('Company'));
@@ -266,12 +252,12 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
             'Content-Type' => 'text/xml; charset=utf-8',
             'SOAPAction' => $this->namespace . $data->getName());
 
-    //    var_dump("SendData data:", $document->saveXML());
+        //    var_dump("SendData data:", $document->saveXML());
 
         $httpResponse = $this->httpClient->post($this->getEndpoint(), $headers, $document->saveXML())->send();
 
         $theResponse = strtolower($httpResponse->getMessage());
-    //    var_dump("sendData:", $theResponse);
+        //    var_dump("sendData:", $theResponse);
         return $this->response = new Response($this, $httpResponse);
     }
 

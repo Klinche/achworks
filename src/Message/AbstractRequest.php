@@ -179,6 +179,8 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
         $data = $this->getInpCompanyData($data);
         $dataInpACHTransRecord = $data->addChild('InpACHTransRecord');
 
+        // TODO: Should Company/LocID be from the PAYOR bank account?
+
         $dataInpACHTransRecord->addChild('SSS', $this->getParameter('SSS'));
         $dataInpACHTransRecord->addChild('LocID', $this->getParameter('LocID'));
 
@@ -188,7 +190,7 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
         $dataInpACHTransRecord->addChild('FrontEndTrace', $feTrace);
         $dataInpACHTransRecord->addChild('OriginatorName', $this->getParameter("Company"));
 
-        //TODO - We need to determine whether this is PPD or CCD?
+        // TODO - We need to determine whether this is PPD or CCD?
         $dataInpACHTransRecord->addChild('TransactionCode', $this->getParameter('TransactionType')); // PPD or CCD?
 
         // DEBIT or CREDIT - Use 'D' or 'C' Don't know if ACH works can handle lower caase, so just make sure it's UPPER

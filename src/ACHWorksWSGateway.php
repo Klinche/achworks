@@ -179,14 +179,6 @@ class ACHWorksWSGateway extends AbstractGateway
         return $this->createRequest('\Omnipay\ACHWorks\Message\PurchaseRequest', $parameters);
     }
 
-    /**
-     * @param array $parameters
-     * @return \Omnipay\ACHWorks\Message\ReferencedPurchaseRequest
-     */
-    public function referencedPurchase(array $parameters = array())
-    {
-        return $this->createRequest('\Omnipay\ACHWorks\Message\ReferencedPurchaseRequest', $parameters);
-    }
 
     /**
      * @param array $parameters

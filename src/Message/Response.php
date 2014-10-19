@@ -16,6 +16,7 @@ class Response extends AbstractResponse implements RedirectResponseInterface
     private $StatusOK = false;
     private $ACHWorksResponseMessage = "";
     private $VALID_RESPONSE = 200;
+    private $ACHReturns = "";
 
     public function __construct(RequestInterface $request, $data)
     {
@@ -28,9 +29,7 @@ class Response extends AbstractResponse implements RedirectResponseInterface
 
         $responseDom = new DOMDocument;
         $responseDom->loadXML($data->getBody());
-        //      var_dump("ResponseDOM", $responseDom);
         $this->data = simplexml_import_dom($responseDom->documentElement->firstChild->firstChild);
-        //   var_dump("RESPONSE DATA", $this->data);
 
         switch (strtolower($this->data->getName())) {
             case 'sendachtransresponse':
@@ -57,12 +56,27 @@ class Response extends AbstractResponse implements RedirectResponseInterface
                 break;
             case 'checkcompanystatusresponse':
                 $result = strtolower($this->data->CheckCompanyStatusResult);
-                $ACHWorksResponseMessage = $result;
+                $this->ACHWorksResponseMessage = $result;
                 if (strpos($result, 'success') !== false) {
                     $this->StatusOK = true;
                     return;
                 } elseif (strpos($result, 'rejected') !== false) {
-                    //     var_dump("CompanyStatusResponse:", $result);
+                    $this->StatusOK = false;
+                    return;
+                } else {
+                    throw new InvalidResponseException;
+                }
+                break;
+            case 'getachreturnsresponse':
+                $result = strtolower($this->data->GetACHReturnsResult->Status);
+                $this->ACHWorksResponseMessage = (string)$this->data->GetACHReturnsResult->Details;
+                if (strpos($result, 'success') !== false) {
+                    $this->StatusOK = true;
+                    //
+                    // TODO Once we have an account verify this method works
+                    $this->ACHReturns = $this->data->GetACHRetrunsResult->ACHReturnsRecords;
+                    return;
+                } elseif (strpos($result, 'rejected') !== false) {
                     $this->StatusOK = false;
                     return;
                 } else {
@@ -97,10 +111,9 @@ class Response extends AbstractResponse implements RedirectResponseInterface
         return 3 === (int)$this->StatusOK;
     }
 
-
-    public function getTransactionReference()
+    public function getACHReturns()
     {
-        return (string)$this->data->TransactionOutputData['CrossReference'];
+        return $this->ACHReturns;
     }
 
     public function getMessage()

@@ -16,7 +16,56 @@ class Response extends AbstractResponse implements RedirectResponseInterface
     private $StatusOK = false;
     private $ACHWorksResponseMessage = "";
     private $VALID_RESPONSE = 200;
-    private $ACHReturns = "";
+    private $ACHReturnRecords = "";
+    private $ACHHistReturnsResultTest = '<?xml version="1.0" encoding="utf-8"?>
+<GetACHReturnsResponse xmlns="http://achworks.com/">
+<GetACHReturnsResult>
+<SSS>string</SSS>
+<LocID>string</LocID>
+<Status>string</Status>
+<Details>string</Details>
+<TotalNumRecords>int</TotalNumRecords>
+<ReturnDateFrom>dateTime</ReturnDateFrom>
+<ReturnDateTo>dateTime</ReturnDateTo>
+<TotalNumErrors>int</TotalNumErrors>
+<Errors>
+<string>string</string>
+<string>string</string>
+</Errors>
+<ACHReturnRecords>
+<ACHReturnRecord>
+<SSS>string</SSS>
+<LocID>string</LocID>
+<SourceFile>string</SourceFile>
+<FrontEndTrace>string</FrontEndTrace>
+<ResponseCode>string</ResponseCode>
+<CustTransType>string</CustTransType>
+<BackEndSN>string</BackEndSN>
+<CustomerName>string</CustomerName>
+<TransAmount>double</TransAmount>
+<EffectiveDate>dateTime</EffectiveDate>
+<ActionDate>dateTime</ActionDate>
+<ActionDetail>string</ActionDetail>
+</ACHReturnRecord>
+<ACHReturnRecord>
+<SSS>string</SSS>
+<LocID>string</LocID>
+<SourceFile>string</SourceFile>
+<FrontEndTrace>string</FrontEndTrace>
+<ResponseCode>string</ResponseCode>
+<CustTransType>string</CustTransType>
+<BackEndSN>string</BackEndSN>
+<CustomerName>string</CustomerName>
+<TransAmount>double</TransAmount>
+<EffectiveDate>dateTime</EffectiveDate>
+<ActionDate>dateTime</ActionDate>
+<ActionDetail>string</ActionDetail>
+</ACHReturnRecord>
+</ACHReturnRecords>
+</GetACHReturnsResult>
+</GetACHReturnsResponse>';
+
+
 
     public function __construct(RequestInterface $request, $data)
     {
@@ -27,9 +76,17 @@ class Response extends AbstractResponse implements RedirectResponseInterface
             throw new InvalidResponseException;
         }
 
+
+
+        $dom=new domDocument;
+        $dom->loadXML($this->ACHHistReturnsResultTest);
+
+
         $responseDom = new DOMDocument;
         $responseDom->loadXML($data->getBody());
         $this->data = simplexml_import_dom($responseDom->documentElement->firstChild->firstChild);
+
+        $this->achHistResult = simplexml_import_dom($dom);;
 
         switch (strtolower($this->data->getName())) {
             case 'sendachtransresponse':
@@ -69,13 +126,15 @@ class Response extends AbstractResponse implements RedirectResponseInterface
                 break;
             case 'getachreturnsresponse':
                 $result = strtolower($this->data->GetACHReturnsResult->Status);
+                var_dump("HISTORY RESP TEST:",  $this->achHistResult);
+                var_dump("Record:", $this->achHistResult->ACHReturnsRecords);
                 $this->ACHWorksResponseMessage = (string)$this->data->GetACHReturnsResult->Details;
-                if (strpos($result, 'success') !== false) {
+                if (strpos($result, 'rejected') !== false) {
                     $this->StatusOK = true;
                     //
                     // TODO Once we have an account verify this method works
-                    $this->ACHReturns = $this->data->GetACHRetrunsResult->ACHReturnsRecords;
-                    return;
+                    $this->ACHReturnRecords = $this->data->GetACHReturnsResult->ACHReturnsRecords;
+                     return;
                 } elseif (strpos($result, 'rejected') !== false) {
                     $this->StatusOK = false;
                     return;

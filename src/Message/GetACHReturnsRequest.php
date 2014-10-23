@@ -7,6 +7,9 @@ use SimpleXMLElement;
 
 /**
  * ACHWorks - Special function ACH to ACH transfer. From BankAccountA to BankAccountB
+ *
+ *      NOTE: This request will only return the Returns since the last time this request was made. For date range use
+ *      GetACHReturnsHistRequest
  */
 class GetACHReturnsRequest extends AbstractRequest
 {

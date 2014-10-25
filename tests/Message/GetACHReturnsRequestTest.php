@@ -35,7 +35,8 @@ class GetACHReturnsRequestTest extends ACHWorksTest
 
         /** @var \Omnipay\ACHWorks\Message\Response $response */
         $msg = $response->getMessage();
-        var_dump("GetACHReturnsTest:", $msg);
+        $myReturns = $response->getACHReturnRecords();
+        var_dump("GetACHReturnsTest:", $myReturns);
         // We fail because there is no valid $$ for this account
     //    $this->assertEquals(false, $response->isSuccessful());
 

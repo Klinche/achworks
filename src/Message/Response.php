@@ -3,6 +3,7 @@
 namespace Omnipay\ACHWorks\Message;
 
 use DOMDocument;
+use Omnipay\ACHWorks\ACHReturnRecord;
 use Omnipay\Common\Exception\InvalidResponseException;
 use Omnipay\Common\Message\AbstractResponse;
 use Omnipay\Common\Message\RedirectResponseInterface;
@@ -16,55 +17,54 @@ class Response extends AbstractResponse implements RedirectResponseInterface
     private $StatusOK = false;
     private $ACHWorksResponseMessage = "";
     private $VALID_RESPONSE = 200;
-    private $ACHReturnRecords = "";
-    private $ACHHistReturnsResultTest = '<?xml version="1.0" encoding="utf-8"?>
-<GetACHReturnsResponse xmlns="http://achworks.com/">
-<GetACHReturnsResult>
-<SSS>string</SSS>
-<LocID>string</LocID>
-<Status>string</Status>
-<Details>string</Details>
-<TotalNumRecords>int</TotalNumRecords>
-<ReturnDateFrom>dateTime</ReturnDateFrom>
-<ReturnDateTo>dateTime</ReturnDateTo>
-<TotalNumErrors>int</TotalNumErrors>
-<Errors>
-<string>string</string>
-<string>string</string>
-</Errors>
-<ACHReturnRecords>
-<ACHReturnRecord>
-<SSS>string</SSS>
-<LocID>string</LocID>
-<SourceFile>string</SourceFile>
-<FrontEndTrace>string</FrontEndTrace>
-<ResponseCode>string</ResponseCode>
-<CustTransType>string</CustTransType>
-<BackEndSN>string</BackEndSN>
-<CustomerName>string</CustomerName>
-<TransAmount>double</TransAmount>
-<EffectiveDate>dateTime</EffectiveDate>
-<ActionDate>dateTime</ActionDate>
-<ActionDetail>string</ActionDetail>
-</ACHReturnRecord>
-<ACHReturnRecord>
-<SSS>string</SSS>
-<LocID>string</LocID>
-<SourceFile>string</SourceFile>
-<FrontEndTrace>string</FrontEndTrace>
-<ResponseCode>string</ResponseCode>
-<CustTransType>string</CustTransType>
-<BackEndSN>string</BackEndSN>
-<CustomerName>string</CustomerName>
-<TransAmount>double</TransAmount>
-<EffectiveDate>dateTime</EffectiveDate>
-<ActionDate>dateTime</ActionDate>
-<ActionDetail>string</ActionDetail>
-</ACHReturnRecord>
-</ACHReturnRecords>
-</GetACHReturnsResult>
-</GetACHReturnsResponse>';
-
+    private $ACHReturnRecords = null;
+    private $ACHHistReturnsResultTest =
+        '<GetACHReturnsResponse xmlns="http://achworks.com/">
+         <GetACHReturnsResult>
+         <SSS>string</SSS>
+         <LocID>string</LocID>
+         <Status>string</Status>
+         <Details>string</Details>
+         <TotalNumRecords>2</TotalNumRecords>
+         <ReturnDateFrom>dateTime</ReturnDateFrom>
+         <ReturnDateTo>dateTime</ReturnDateTo>
+         <TotalNumErrors>int</TotalNumErrors>
+         <Errors>
+         <string>string</string>
+         <string>string</string>
+         </Errors>
+         <ACHReturnRecords>
+           <ACHReturnRecord>
+              <SSS>SS1</SSS>
+              <LocID>LOC1</LocID>
+              <SourceFile>Source1</SourceFile>
+              <FrontEndTrace>string</FrontEndTrace>
+              <ResponseCode>string</ResponseCode>
+              <CustTransType>string</CustTransType>
+              <BackEndSN>string</BackEndSN>
+              <CustomerName>Rec1</CustomerName>
+              <TransAmount>double</TransAmount>
+              <EffectiveDate>dateTime</EffectiveDate>
+              <ActionDate>dateTime</ActionDate>
+              <ActionDetail>string</ActionDetail>
+            </ACHReturnRecord>
+            <ACHReturnRecord>
+              <SSS>SS2</SSS>
+              <LocID>LOC2</LocID>
+              <SourceFile>Source2</SourceFile>
+              <FrontEndTrace>string</FrontEndTrace>
+              <ResponseCode>string</ResponseCode>
+              <CustTransType>string</CustTransType>
+              <BackEndSN>string</BackEndSN>
+              <CustomerName>Rec2</CustomerName>
+              <TransAmount>double</TransAmount>
+              <EffectiveDate>dateTime</EffectiveDate>
+              <ActionDate>dateTime</ActionDate>
+              <ActionDetail>string</ActionDetail>
+            </ACHReturnRecord>
+           </ACHReturnRecords>
+         </GetACHReturnsResult>
+         </GetACHReturnsResponse>';
 
 
     public function __construct(RequestInterface $request, $data)
@@ -72,13 +72,16 @@ class Response extends AbstractResponse implements RedirectResponseInterface
 
         $this->request = $request;
 
+        $this->ACHReturnRecords = array();
+
         if ($data->getStatusCode() != $this->VALID_RESPONSE) {
             throw new InvalidResponseException;
         }
 
 
-
-        $dom=new domDocument;
+        //
+        //  This is for testing only
+        $dom = new DOMDocument;
         $dom->loadXML($this->ACHHistReturnsResultTest);
 
 
@@ -86,7 +89,7 @@ class Response extends AbstractResponse implements RedirectResponseInterface
         $responseDom->loadXML($data->getBody());
         $this->data = simplexml_import_dom($responseDom->documentElement->firstChild->firstChild);
 
-        $this->achHistResult = simplexml_import_dom($dom);;
+        $this->achHistResult = simplexml_import_dom($dom);
 
         switch (strtolower($this->data->getName())) {
             case 'sendachtransresponse':
@@ -126,15 +129,27 @@ class Response extends AbstractResponse implements RedirectResponseInterface
                 break;
             case 'getachreturnsresponse':
                 $result = strtolower($this->data->GetACHReturnsResult->Status);
-                var_dump("HISTORY RESP TEST:",  $this->achHistResult);
-                var_dump("Record:", $this->achHistResult->ACHReturnsRecords);
+
+                //
+                // TODO This is a dummy test, we will be rejected now. So we can verify dummy data returns
+                foreach ($this->achHistResult->GetACHReturnsResult->ACHReturnRecords->ACHReturnRecord as $aRecord) {
+                    /**
+                     * @var \Omnipay\ACHWorks\AchReturnRecord
+                     */
+                    $this->ACHReturnRecords[] = $this->loadHistory($aRecord);
+                }
                 $this->ACHWorksResponseMessage = (string)$this->data->GetACHReturnsResult->Details;
                 if (strpos($result, 'rejected') !== false) {
                     $this->StatusOK = true;
                     //
                     // TODO Once we have an account verify this method works
-                    $this->ACHReturnRecords = $this->data->GetACHReturnsResult->ACHReturnsRecords;
-                     return;
+                    foreach ($this->achHistResult->GetACHReturnsResult->ACHReturnRecords->ACHReturnRecord as $aRecord) {
+                        /**
+                         * @var \Omnipay\ACHWorks\AchReturnRecord
+                         */
+                        $this->ACHReturnRecords[] = $this->loadHistory($aRecord);
+                    }
+                    return;
                 } elseif (strpos($result, 'rejected') !== false) {
                     $this->StatusOK = false;
                     return;
@@ -146,6 +161,28 @@ class Response extends AbstractResponse implements RedirectResponseInterface
                 var_dump("Default", $this->data->getName());
                 throw new InvalidResponseException;
         }
+    }
+
+    /*
+     *  Given an ACHReturnRecord from the GetACHReturns call we create a local class item for addition to an array
+     *   of Return Records
+     */
+    private function loadHistory($aRecord)
+    {
+        $historyRecord = new ACHReturnRecord();
+        $historyRecord->setSSS($aRecord->SSS);
+        $historyRecord->setLocID($aRecord->LocID);
+        $historyRecord->setSourceFile($aRecord->SourceFile);
+        $historyRecord->setFrontEndTrace($aRecord->FrontEndTrace);
+        $historyRecord->setResponseCode($aRecord->ResponseCode);
+        $historyRecord->setCustTransType($aRecord->CustTransType);
+        $historyRecord->setBackEndSN($aRecord->BackEndSN);
+        $historyRecord->setCustomerName($aRecord->CustomerName);
+        $historyRecord->setTransAmount($aRecord->TransAmount);
+        $historyRecord->setEffectiveDate($aRecord->EffectiveDate);
+        $historyRecord->setActionDate($aRecord->ActionDate);
+        $historyRecord->setActionDetail($aRecord->ActionDetail);
+        return $historyRecord;
     }
 
     public function getACHWorksResponseMessage()
@@ -170,10 +207,11 @@ class Response extends AbstractResponse implements RedirectResponseInterface
         return 3 === (int)$this->StatusOK;
     }
 
-    public function getACHReturns()
+    public function getACHReturnRecords()
     {
-        return $this->ACHReturns;
+        return $this->ACHReturnRecords;
     }
+
 
     public function getMessage()
     {

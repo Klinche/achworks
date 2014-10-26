@@ -50,5 +50,4 @@ class GetACHReturnsHistRequest extends AbstractRequest
         // use \date so we work within symfony framework
         return \date('y-m-d', $this->getParameter('ToDate'));
     }
-
 }

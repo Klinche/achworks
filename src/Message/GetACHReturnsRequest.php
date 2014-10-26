@@ -6,7 +6,7 @@ use DOMDocument;
 use SimpleXMLElement;
 
 /**
- * ACHWorks - Special function ACH to ACH transfer. From BankAccountA to BankAccountB
+ * ACHWorks - Special function GetACHReturns request
  *
  *      NOTE: This request will only return the Returns since the last time this request was made. For date range use
  *      GetACHReturnsHistRequest
@@ -22,6 +22,5 @@ class GetACHReturnsRequest extends AbstractRequest
         $data = $this->getInpCompanyData($data);
         return $data;
 
-        return $data;
     }
 }

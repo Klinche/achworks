@@ -24,21 +24,21 @@ class GetACHReturnsRequestTest extends ACHWorksTest
                 'LocID' => '9505',
                 'CompanyKey' => 'SASD%!%$DGLJGWYRRDGDDUDFDESDHDD',
                 'Company' => 'MyCompany',
-              )
+            )
         );
     }
 
     public function testGetData()
     {
         $data = $this->request->getData();
-        $response = $this->request->sendData($data);
+        //    $response = $this->request->sendData($data);
 
         /** @var \Omnipay\ACHWorks\Message\Response $response */
-        $msg = $response->getMessage();
-        $myReturns = $response->getACHReturnRecords();
-        var_dump("GetACHReturnsTest:", $myReturns);
+        //    $msg = $response->getMessage();
+        //    $myReturns = $response->getACHReturnRecords();
+        //   var_dump("GetACHReturnsTest:", $myReturns);
         // We fail because there is no valid $$ for this account
-    //    $this->assertEquals(false, $response->isSuccessful());
+        //    $this->assertEquals(false, $response->isSuccessful());
 
     }
 }

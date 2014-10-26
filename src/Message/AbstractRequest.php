@@ -254,7 +254,7 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
             'Content-Type' => 'text/xml; charset=utf-8',
             'SOAPAction' => $this->namespace . $data->getName());
 
-        //    var_dump("SendData data:", $document->saveXML());
+        //  var_dump("SendData data:", $document->saveXML());
 
         $httpResponse = $this->httpClient->post($this->getEndpoint(), $headers, $document->saveXML())->send();
 

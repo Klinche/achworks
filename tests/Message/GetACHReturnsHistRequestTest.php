@@ -6,7 +6,7 @@ use Omnipay\Tests\TestCase;
 use Omnipay\ACHWorks\BankAccount;
 use Omnipay\ACHWorks;
 
-class CheckCompanyStatusRequestTest extends ACHWorksTest
+class GetACHReturnsHistRequestTest extends ACHWorksTest
 {
 
     public function setUp()
@@ -14,23 +14,18 @@ class CheckCompanyStatusRequestTest extends ACHWorksTest
 
         parent::setUp();
 
-        $this->request = new CheckCompanyStatusRequest($this->getHttpClient(), $this->getHttpRequest());
+        $this->request = new GetACHReturnsHistRequest($this->getHttpClient(), $this->getHttpRequest());
         $this->request->initialize(
 
             array(
-                'amount' => '12.00',
-                'bankAccountPayee' => $this->bankAccountPayee,
                 'developerMode' => true,
                 'memo' => 'PurchaseTest-ACHWorks',
                 'SSS' => 'TST',
                 'LocID' => '9505',
                 'CompanyKey' => 'SASD%!%$DGLJGWYRRDGDDUDFDESDHDD',
                 'Company' => 'MyCompany',
-                'TransactionType' => 'PPD',
-                'OpCode' => 'S',
-                'AccountSet' => '1',
-                'CheckNumber' => '123',
-
+                'FromDate' => '2012-01-01', // Format is date('Y-m-d') in php
+                'ToDate' => '2012-12-31',
             )
         );
     }
@@ -38,8 +33,12 @@ class CheckCompanyStatusRequestTest extends ACHWorksTest
     public function testGetData()
     {
         $data = $this->request->getData();
-        //     $response = $this->request->sendData($data);
+        $response = $this->request->sendData($data);
 
+        /** @var \Omnipay\ACHWorks\Message\Response $response */
+        $msg = $response->getMessage();
+        $myReturns = $response->getACHReturnRecords();
+        var_dump("GetACHReturnsHistTest:", $myReturns);
         // We fail because there is no valid $$ for this account
         //    $this->assertEquals(false, $response->isSuccessful());
 

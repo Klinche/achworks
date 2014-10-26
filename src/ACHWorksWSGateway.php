@@ -237,6 +237,19 @@ class ACHWorksWSGateway extends AbstractGateway
         return $this->createRequest('\Omnipay\ACHWorks\Message\GetACHReturnsRequest', $parameters);
     }
 
+
+    /*
+  *  achworks-SoapVer4guide - Sect 2.3.2 - GetACHReturnsHIST
+  *
+  * @param array $parameters
+  * @return \Omnipay\ACHWorks\Message\GetACHReturnsHistRequest
+  */
+    public function getACHReturnsHist(array $parameters = array())
+    {
+        return $this->createRequest('\Omnipay\ACHWorks\Message\GetACHReturnsHistRequest', $parameters);
+    }
+
+
     /*
      *  achworks-SoapVer4guide - Sect 2.4.1 - GetResultFile
      *

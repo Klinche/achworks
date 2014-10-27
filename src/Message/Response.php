@@ -133,7 +133,7 @@ class Response extends AbstractResponse implements RedirectResponseInterface
                 // TODO This is a dummy test, we will be rejected now. So we can verify dummy data returns
                 foreach ($this->achHistResult->GetACHReturnsResult->ACHReturnRecords->ACHReturnRecord as $aRecord) {
                     /**
-                     * @var \Omnipay\ACHWorks\AchReturnRecord
+                     * @var \Omnipay\ACHWorks\ACHReturnRecord
                      */
                     $this->ACHReturnRecords[] = $this->loadHistory($aRecord);
                 }
@@ -144,7 +144,7 @@ class Response extends AbstractResponse implements RedirectResponseInterface
                     // TODO Once we have an account verify this method works
                     foreach ($this->achHistResult->GetACHReturnsResult->ACHReturnRecords->ACHReturnRecord as $aRecord) {
                         /**
-                         * @var \Omnipay\ACHWorks\AchReturnRecord
+                         * @var \Omnipay\ACHWorks\ACHReturnRecord
                          */
                         $this->ACHReturnRecords[] = $this->loadHistory($aRecord);
                     }
@@ -174,7 +174,7 @@ class Response extends AbstractResponse implements RedirectResponseInterface
                     // TODO Once we have an account verify this method works
                     foreach ($this->achHistResult->GetACHReturnsResult->ACHReturnRecords->ACHReturnRecord as $aRecord) {
                         /**
-                         * @var \Omnipay\ACHWorks\AchReturnRecord
+                         * @var \Omnipay\ACHWorks\ACHReturnRecord
                          */
                         $this->ACHReturnRecords[] = $this->loadHistory($aRecord);
                     }
@@ -198,6 +198,9 @@ class Response extends AbstractResponse implements RedirectResponseInterface
      */
     private function loadHistory($aRecord)
     {
+        /**
+         * @var \Omnipay\ACHWorks\ACHReturnRecord
+         */
         $historyRecord = new ACHReturnRecord();
         $historyRecord->setSSS($aRecord->SSS);
         $historyRecord->setLocID($aRecord->LocID);

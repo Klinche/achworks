@@ -163,7 +163,7 @@ class Response extends AbstractResponse implements RedirectResponseInterface
                 // TODO This is a dummy test, we will be rejected now. So we can verify dummy data returns
                 foreach ($this->achHistResult->GetACHReturnsResult->ACHReturnRecords->ACHReturnRecord as $aRecord) {
                     /**
-                     * @var \Omnipay\ACHWorks\AchReturnRecord
+                     * @var \Omnipay\ACHWorks\ACHReturnRecord
                      */
                     $this->ACHReturnRecords[] = $this->loadHistory($aRecord);
                 }

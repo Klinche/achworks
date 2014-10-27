@@ -15,7 +15,7 @@ use Omnipay\Common\Helper;
 
 /**
  * ACHWorks return class- Contains data from a Returns Request
- *    The Parameters in this class map to the ACHWorks Return record
+ *    The Parameters in this class map to the ACHWorks Return record used in GetACHReturns and GetACHReturnsHist
  */
 class ACHReturnRecord
 {

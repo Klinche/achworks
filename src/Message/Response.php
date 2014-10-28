@@ -89,7 +89,7 @@ class Response extends AbstractResponse implements RedirectResponseInterface
         $responseDom->loadXML($data->getBody());
         $this->data = simplexml_import_dom($responseDom->documentElement->firstChild->firstChild);
 
-        $this->achHistResult = simplexml_import_dom($dom);
+        $this->achHistResultTest = simplexml_import_dom($dom);
 
         switch (strtolower($this->data->getName())) {
             case 'sendachtransresponse':
@@ -129,20 +129,21 @@ class Response extends AbstractResponse implements RedirectResponseInterface
                 break;
             case 'getachreturnshistresponse':
                 $result = strtolower($this->data->GetACHReturnsHistResult->Status);
-                //
-                // TODO This is a dummy test, we will be rejected now. So we can verify dummy data returns
-                foreach ($this->achHistResult->GetACHReturnsResult->ACHReturnRecords->ACHReturnRecord as $aRecord) {
-                    /**
-                     * @var \Omnipay\ACHWorks\ACHReturnRecord
-                     */
-                    $this->ACHReturnRecords[] = $this->loadHistory($aRecord);
+
+                if($request->getParameters()->get('developerMode')) {
+                    //This is a dummy test, we will be rejected now. So we can verify dummy data returns
+                    foreach ($this->achHistResultTest->GetACHReturnsResult->ACHReturnRecords->ACHReturnRecord as $aRecord) {
+                        /**
+                         * @var \Omnipay\ACHWorks\ACHReturnRecord
+                         */
+                        $this->ACHReturnRecords[] = $this->loadHistory($aRecord);
+                    }
                 }
+
                 $this->ACHWorksResponseMessage = (string)$this->data->GetACHReturnsResult->Details;
                 if (strpos($result, 'rejected') !== false) {
                     $this->StatusOK = true;
-                    //
-                    // TODO Once we have an account verify this method works
-                    foreach ($this->achHistResult->GetACHReturnsResult->ACHReturnRecords->ACHReturnRecord as $aRecord) {
+                    foreach ($this->data->GetACHReturnsResult->ACHReturnRecords->ACHReturnRecord as $aRecord) {
                         /**
                          * @var \Omnipay\ACHWorks\ACHReturnRecord
                          */
@@ -159,20 +160,22 @@ class Response extends AbstractResponse implements RedirectResponseInterface
             case 'getachreturnsresponse':
                 $result = strtolower($this->data->GetACHReturnsResult->Status);
 
-                //
-                // TODO This is a dummy test, we will be rejected now. So we can verify dummy data returns
-                foreach ($this->achHistResult->GetACHReturnsResult->ACHReturnRecords->ACHReturnRecord as $aRecord) {
-                    /**
-                     * @var \Omnipay\ACHWorks\ACHReturnRecord
-                     */
-                    $this->ACHReturnRecords[] = $this->loadHistory($aRecord);
+                if($request->getParameters()->get('developerMode')) {
+                    //This is a dummy test, we will be rejected now. So we can verify dummy data returns
+                    foreach ($this->achHistResultTest->GetACHReturnsResult->ACHReturnRecords->ACHReturnRecord as $aRecord) {
+                        /**
+                         * @var \Omnipay\ACHWorks\ACHReturnRecord
+                         */
+                        $this->ACHReturnRecords[] = $this->loadHistory($aRecord);
+                    }
                 }
+
                 $this->ACHWorksResponseMessage = (string)$this->data->GetACHReturnsResult->Details;
                 if (strpos($result, 'rejected') !== false) {
                     $this->StatusOK = true;
                     //
                     // TODO Once we have an account verify this method works
-                    foreach ($this->achHistResult->GetACHReturnsResult->ACHReturnRecords->ACHReturnRecord as $aRecord) {
+                    foreach ($this->data->GetACHReturnsResult->ACHReturnRecords->ACHReturnRecord as $aRecord) {
                         /**
                          * @var \Omnipay\ACHWorks\ACHReturnRecord
                          */

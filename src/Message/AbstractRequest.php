@@ -62,6 +62,16 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
         return $this->getParameter('developerMode');
     }
 
+    public function setFrontEndTrace($value)
+    {
+        return $this->setParameter('frontEndTrace', $value);
+    }
+    
+    public function getFrontEndTrace()
+    {
+        return $this->getParameter('frontEndTrace');
+    }
+
     public function setDeveloperMode($value)
     {
         return $this->setParameter('developerMode', $value);
@@ -157,10 +167,10 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
     protected function getInpCompanyData(SimpleXMLElement $data)
     {
         $inpCompanyInfo = $data->addChild('InpCompanyInfo');
-        $inpCompanyInfo->addChild('SSS', $this->getParameter('SSS'));
-        $inpCompanyInfo->addChild('LocID', $this->getParameter('LocID'));
-        $inpCompanyInfo->addChild('Company', $this->getParameter('Company'));
-        $inpCompanyInfo->addChild('CompanyKey', $this->getParameter('CompanyKey'));
+        $inpCompanyInfo->addChild('SSS', $this->getSSS());
+        $inpCompanyInfo->addChild('LocID', $this->getLocID());
+        $inpCompanyInfo->addChild('Company', $this->getCompany());
+        $inpCompanyInfo->addChild('CompanyKey', $this->getCompanyKey());
         return $data;
     }
 
@@ -181,17 +191,15 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
 
         // TODO: Should Company/LocID be from the PAYOR bank account?
 
-        $dataInpACHTransRecord->addChild('SSS', $this->getParameter('SSS'));
-        $dataInpACHTransRecord->addChild('LocID', $this->getParameter('LocID'));
+        $dataInpACHTransRecord->addChild('SSS', $this->getSSS());
+        $dataInpACHTransRecord->addChild('LocID', $this->getLocID());
 
 
-        // Unique ID that does not start with W. And can't be more than 12 characters
-        $feTrace = substr('K' . uniqid(), 0, 10);
-        $dataInpACHTransRecord->addChild('FrontEndTrace', $feTrace);
-        $dataInpACHTransRecord->addChild('OriginatorName', $this->getParameter("Company"));
+        $dataInpACHTransRecord->addChild('FrontEndTrace', $this->getFrontEndTrace());
+        $dataInpACHTransRecord->addChild('OriginatorName', $this->getCompany());
 
         // TODO - We need to determine whether this is PPD or CCD?
-        $dataInpACHTransRecord->addChild('TransactionCode', $this->getParameter('TransactionType')); // PPD or CCD?
+        $dataInpACHTransRecord->addChild('TransactionCode', $this->getTransactionType()); // PPD or CCD?
 
         // DEBIT or CREDIT - Use 'D' or 'C' Don't know if ACH works can handle lower caase, so just make sure it's UPPER
         $dataInpACHTransRecord->addChild('CustTransType', strtoupper($custTransType));
@@ -226,10 +234,10 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
         $dataInpACHTransRecord->addChild('Memo', $memoStr);
 
         //  'S' for Single Entry or 'R' for recurring.
-        $dataInpACHTransRecord->addChild('OpCode', $this->getParameter('OpCode'));
+        $dataInpACHTransRecord->addChild('OpCode', $this->getOpCode());
 
         // Merchant's may have multiple account sets. IE; Account set 1 = BofA, Account set 2 = WellsFarge
-        $dataInpACHTransRecord->addChild('AccountSet', $this->getParameter('AccountSet'));
+        $dataInpACHTransRecord->addChild('AccountSet', $this->getAccountSet());
 
         return $data;
     }

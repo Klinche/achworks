@@ -130,7 +130,7 @@ class Response extends AbstractResponse implements RedirectResponseInterface
             case 'getachreturnshistresponse':
                 $result = strtolower($this->data->GetACHReturnsHistResult->Status);
 
-                if($request->getParameters()->get('developerMode')) {
+                if(isset($request->getParameters()['developerMode']) && $request->getParameters()['developerMode']) {
                     //This is a dummy test, we will be rejected now. So we can verify dummy data returns
                     foreach ($this->achHistResultTest->GetACHReturnsResult->ACHReturnRecords->ACHReturnRecord as $aRecord) {
                         /**
@@ -138,29 +138,30 @@ class Response extends AbstractResponse implements RedirectResponseInterface
                          */
                         $this->ACHReturnRecords[] = $this->loadHistory($aRecord);
                     }
+                } else {
+                    $this->ACHWorksResponseMessage = (string)$this->data->GetACHReturnsResult->Details;
+                    if (strpos($result, 'rejected') !== false) {
+                        $this->StatusOK = true;
+                        foreach ($this->data->GetACHReturnsResult->ACHReturnRecords->ACHReturnRecord as $aRecord) {
+                            /**
+                             * @var \Omnipay\ACHWorks\ACHReturnRecord
+                             */
+                            $this->ACHReturnRecords[] = $this->loadHistory($aRecord);
+                        }
+                        return;
+                    } elseif (strpos($result, 'rejected') !== false) {
+                        $this->StatusOK = false;
+                        return;
+                    } else {
+                        throw new InvalidResponseException;
+                    }
                 }
 
-                $this->ACHWorksResponseMessage = (string)$this->data->GetACHReturnsResult->Details;
-                if (strpos($result, 'rejected') !== false) {
-                    $this->StatusOK = true;
-                    foreach ($this->data->GetACHReturnsResult->ACHReturnRecords->ACHReturnRecord as $aRecord) {
-                        /**
-                         * @var \Omnipay\ACHWorks\ACHReturnRecord
-                         */
-                        $this->ACHReturnRecords[] = $this->loadHistory($aRecord);
-                    }
-                    return;
-                } elseif (strpos($result, 'rejected') !== false) {
-                    $this->StatusOK = false;
-                    return;
-                } else {
-                    throw new InvalidResponseException;
-                }
                 break;
             case 'getachreturnsresponse':
                 $result = strtolower($this->data->GetACHReturnsResult->Status);
 
-                if($request->getParameters()->get('developerMode')) {
+                if(isset($request->getParameters()['developerMode']) && $request->getParameters()['developerMode']) {
                     //This is a dummy test, we will be rejected now. So we can verify dummy data returns
                     foreach ($this->achHistResultTest->GetACHReturnsResult->ACHReturnRecords->ACHReturnRecord as $aRecord) {
                         /**
@@ -168,26 +169,27 @@ class Response extends AbstractResponse implements RedirectResponseInterface
                          */
                         $this->ACHReturnRecords[] = $this->loadHistory($aRecord);
                     }
+                } else {
+                    $this->ACHWorksResponseMessage = (string)$this->data->GetACHReturnsResult->Details;
+                    if (strpos($result, 'rejected') !== false) {
+                        $this->StatusOK = true;
+                        //
+                        // TODO Once we have an account verify this method works
+                        foreach ($this->data->GetACHReturnsResult->ACHReturnRecords->ACHReturnRecord as $aRecord) {
+                            /**
+                             * @var \Omnipay\ACHWorks\ACHReturnRecord
+                             */
+                            $this->ACHReturnRecords[] = $this->loadHistory($aRecord);
+                        }
+                        return;
+                    } elseif (strpos($result, 'rejected') !== false) {
+                        $this->StatusOK = false;
+                        return;
+                    } else {
+                        throw new InvalidResponseException;
+                    }
                 }
 
-                $this->ACHWorksResponseMessage = (string)$this->data->GetACHReturnsResult->Details;
-                if (strpos($result, 'rejected') !== false) {
-                    $this->StatusOK = true;
-                    //
-                    // TODO Once we have an account verify this method works
-                    foreach ($this->data->GetACHReturnsResult->ACHReturnRecords->ACHReturnRecord as $aRecord) {
-                        /**
-                         * @var \Omnipay\ACHWorks\ACHReturnRecord
-                         */
-                        $this->ACHReturnRecords[] = $this->loadHistory($aRecord);
-                    }
-                    return;
-                } elseif (strpos($result, 'rejected') !== false) {
-                    $this->StatusOK = false;
-                    return;
-                } else {
-                    throw new InvalidResponseException;
-                }
                 break;
             default:
                 var_dump("Default", $this->data->getName());

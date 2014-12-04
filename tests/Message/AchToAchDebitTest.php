@@ -19,7 +19,6 @@ class AchToAchDebitTest extends ACHWorksTest
             array(
 
                 'amount' => '12.00',
-                'bankAccountPayor' => $this->bankAccountPayee,
                 'bankAccountPayee' => $this->bankAccountPayee,
                 'developerMode' => true,
                 'CheckNumber' => '123',

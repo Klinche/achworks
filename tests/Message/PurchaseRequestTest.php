@@ -18,7 +18,6 @@ class PurchaseRequestTest extends ACHWorksTest
         $this->request->initialize(
             array(
                 'amount' => '12.00',
-                'bankAccountPayor' => $this->bankAccountPayee,
                 'bankAccountPayee' => $this->bankAccountPayee,
                 'developerMode' => true,
                 'memo' => 'PurchaseTest-ACHWorks',

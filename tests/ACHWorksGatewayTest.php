@@ -32,21 +32,6 @@ class ACHWorksGateWayTest extends GatewayTestCase
         $this->bankAccountPayee->setBillingState("DC, NE");
         $this->bankAccountPayee->setCompany("DAB2LLC");
 
-        $this->bankAccountPayor = new BankAccount();
-        $this->bankAccountPayor->setAccountNumber("0512-351123");
-        $this->bankAccountPayor->setRoutingNumber("4271-04881");
-        $this->bankAccountPayor->setBankName("Freddy National Bank");
-        $this->bankAccountPayor->setBankAccountType(BankAccount::ACCOUNT_TYPE_CHECKING);
-        $this->bankAccountPayor->setBillingFirstName("Freddy");
-        $this->bankAccountPayor->setBillingLastName("DABLname");
-        $this->bankAccountPayor->setName("Freddy DABLname");
-        $this->bankAccountPayor->setBillingAddress1("15502 K Street");
-        $this->bankAccountPayor->setBillingCity("Washington DC");
-        $this->bankAccountPayor->setBillingName("FED-Payee");
-        $this->bankAccountPayor->setBillingPostcode("20003");
-        $this->bankAccountPayor->setBillingState("DC, NE");
-        $this->bankAccountPayor->setCompany("DAB2LLC2");
-
         $this->gateway = new ACHWorksWSGateway($this->getHttpClient(), $this->getHttpRequest());
 
         $this->gateway->setTestMode(true);
@@ -54,7 +39,6 @@ class ACHWorksGateWayTest extends GatewayTestCase
 
         $this->purchaseOptions = array(
             'amount' => '12.00',
-            'bankAccountPayor' => $this->bankAccountPayee,
             'bankAccountPayee' => $this->bankAccountPayee,
             'CheckNumber' => '123',
             'developerMode' => true,
@@ -70,7 +54,6 @@ class ACHWorksGateWayTest extends GatewayTestCase
 
         $this->creditOptions = array(
             'amount' => '12.00',
-            'bankAccountPayor' => $this->bankAccountPayor,
             'bankAccountPayee' => $this->bankAccountPayee,
             'CheckNumber' => '123',
             'developerMode' => true,

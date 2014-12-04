@@ -18,7 +18,6 @@ class RefundRequestTest extends ACHWorksTest
         $this->request->initialize(
             array(
                 'amount' => '172.00',
-                'bankAccountPayor' => $this->bankAccountPayee,
                 'bankAccountPayee' => $this->bankAccountPayee,
                 'developerMode' => true,
                 'CheckNumber' => '123',

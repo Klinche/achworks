@@ -17,7 +17,8 @@ class RefundRequest extends AuthorizeRequest
     public function getData()
     {
         // This is a generic transaction that can be done for either Debit or Credit!
-        $data = $this->setupSendACHTrans('C');
+        $this->setMode('C');
+        $data = $this->setupSendACHTrans();
 
         return $data;
     }

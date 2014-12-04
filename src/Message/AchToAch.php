@@ -16,7 +16,8 @@ class AchToAch extends PurchaseRequest
     {
         $this->getCustomerId();
         // This is a generic transaction that can be done for either Debit or Credit!
-        $data = $this->setupSendACHTrans('D');
+        // The caller must set mode $this->setMode('D') or $this->setMode('C');
+        $data = $this->setupSendACHTrans();
 
         return $data;
     }

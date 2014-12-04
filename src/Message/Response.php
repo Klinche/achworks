@@ -130,7 +130,7 @@ class Response extends AbstractResponse implements RedirectResponseInterface
             case 'getachreturnshistresponse':
                 $result = strtolower($this->data->GetACHReturnsHistResult->Status);
 
-                if(isset($request->getParameters()['developerMode']) && $request->getParameters()['developerMode']) {
+                if (isset($request->getParameters()['developerMode']) && $request->getParameters()['developerMode']) {
                     //This is a dummy test, we will be rejected now. So we can verify dummy data returns
                     foreach ($this->achHistResultTest->GetACHReturnsResult->ACHReturnRecords->ACHReturnRecord as $aRecord) {
                         /**
@@ -161,7 +161,7 @@ class Response extends AbstractResponse implements RedirectResponseInterface
             case 'getachreturnsresponse':
                 $result = strtolower($this->data->GetACHReturnsResult->Status);
 
-                if(isset($request->getParameters()['developerMode']) && $request->getParameters()['developerMode']) {
+                if (isset($request->getParameters()['developerMode']) && $request->getParameters()['developerMode']) {
                     //This is a dummy test, we will be rejected now. So we can verify dummy data returns
                     foreach ($this->achHistResultTest->GetACHReturnsResult->ACHReturnRecords->ACHReturnRecord as $aRecord) {
                         /**

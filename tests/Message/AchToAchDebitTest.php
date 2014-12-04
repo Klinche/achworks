@@ -6,7 +6,7 @@ use Omnipay\ACHWorks\BankAccount;
 use Omnipay\ACHWorks;
 use Omnipay\Omnipay;
 
-class AchToAchtTest extends ACHWorksTest
+class AchToAchDebitTest extends ACHWorksTest
 {
 
     public function setUp()
@@ -31,6 +31,7 @@ class AchToAchtTest extends ACHWorksTest
                 'TransactionType' => 'PPD',
                 'OpCode' => 'S',
                 'AccountSet' => '1',
+                'Mode' => 'D'
             )
         );
     }
@@ -40,9 +41,9 @@ class AchToAchtTest extends ACHWorksTest
         $data = $this->request->getData();
         $this->request->setTestMode(true);
 
-        //    $response = $this->request->sendData($data);
+        // $response = $this->request->sendData($data);
         //    $this->assertEquals(true, $response->isSuccessful());
-        //      var_dump("achToAch", $response);
+        // var_dump("achToAch", $data);
 
     }
 }

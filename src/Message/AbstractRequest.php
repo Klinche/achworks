@@ -66,7 +66,7 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
     {
         return $this->setParameter('frontEndTrace', $value);
     }
-    
+
     public function getFrontEndTrace()
     {
         return $this->getParameter('frontEndTrace');
@@ -153,6 +153,16 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
         return $this->setParameter('OpCode', $value);
     }
 
+    public function getMode()
+    {
+        return $this->getParameter('Mode');
+    }
+
+    public function setMode($value)
+    {
+        return $this->setParameter('Mode', strtoupper($value));
+    }
+
     // Merchant's may have multiple account sets. IE; Account set 1 = BofA, Account set 2 = WellsFarge
     public function getAccountSet()
     {
@@ -174,14 +184,15 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
         return $data;
     }
 
+
     /**
      * setupSendACHTrans - Initialize a basic sendACHTransaction. It can be either Debit or Credit
      *
-     * @param $custTransType  a String either 'D' or 'C' for the transaction
-     *
      * @return $data- A SimpleXMLElement with all the nodes filled in
+     *
+     * Must set up the direction (Debit/Credit) with the mode parameter
      */
-    public function setupSendACHTrans($custTransType)
+    public function setupSendACHTrans()
     {
 
         $data = new SimpleXMLElement('<SendACHTrans/>');
@@ -202,7 +213,7 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
         $dataInpACHTransRecord->addChild('TransactionCode', $this->getTransactionType()); // PPD or CCD?
 
         // DEBIT or CREDIT - Use 'D' or 'C' Don't know if ACH works can handle lower caase, so just make sure it's UPPER
-        $dataInpACHTransRecord->addChild('CustTransType', strtoupper($custTransType));
+        $dataInpACHTransRecord->addChild('CustTransType', strtoupper($this->getMode()));
 
         $dataInpACHTransRecord->addChild('CustomerID', $this->getBankAccountPayee()->getName());
 
@@ -260,7 +271,8 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
         // post to ACHWorks
         $headers = array(
             'Content-Type' => 'text/xml; charset=utf-8',
-            'SOAPAction' => $this->namespace . $data->getName());
+            'SOAPAction' => $this->namespace . $data->getName()
+        );
 
         //  var_dump("SendData data:", $document->saveXML());
 

@@ -219,11 +219,11 @@ class ACHWorksWSGateway extends AbstractGateway
      *  achworks-SoapVer4guide - Sect 2.2.1 -SendACHTrans
      *
      * @param array $parameters
-     * @return \Omnipay\ACHWorks\Message\SendACHTransRequest
+     * @return \Omnipay\ACHWorks\Message\AchToAchRequest
      */
-    public function sendACHTrans(array $parameters = array())
+    public function achTransfer(array $parameters = array())
     {
-        return $this->createRequest('\Omnipay\ACHWorks\Message\SendACHTransRequest', $parameters);
+        return $this->createRequest('\Omnipay\ACHWorks\Message\AchToAchRequest', $parameters);
     }
 
     /*

@@ -68,8 +68,26 @@ class ACHWorksGateWayTest extends GatewayTestCase
             'AccountSet' => '1',
         );
 
+        $this->creditOptions = array(
+            'amount' => '12.00',
+            'bankAccountPayor' => $this->bankAccountPayor,
+            'bankAccountPayee' => $this->bankAccountPayee,
+            'CheckNumber' => '123',
+            'developerMode' => true,
+            'memo' => 'CredACH2ACHTest-ACHWorks',
+            'SSS' => 'TST',
+            'LocID' => '9505',
+            'CompanyKey' => 'SASD%!%$DGLJGWYRRDGDDUDFDESDHDD',
+            'Company' => 'MYCOMPANY',
+            'TransactionType' => 'PPD',
+            'OpCode' => 'S',
+            'AccountSet' => '1',
+            'Mode' => 'C'
+        );
+
         /** @var \Omnipay\ACHWorks\Message\PurchaseRequest $request */
         $request = $this->gateway->purchase($this->purchaseOptions);
+        $request = $this->gateway->achTransfer($this->creditOptions);
 
         /** @var \Omnipay\ACHWorks\Message\Response $response */
      //   $response = $request->send();

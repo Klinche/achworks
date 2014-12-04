@@ -13,7 +13,7 @@ class AchToAchtCreditTest extends ACHWorksTest
     {
         parent::setUp();
 
-        $this->request = new PurchaseRequest($this->getHttpClient(), $this->getHttpRequest());
+        $this->request = new AchToAchRequest($this->getHttpClient(), $this->getHttpRequest());
 
         $this->request->initialize(
             array(
